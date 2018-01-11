@@ -48,5 +48,7 @@ A collection of plugins for kubectl integration
   - Like kubectl exec, but offers a --user flag to exec as root (or any other user) if you're running in GKE
   
   - Usage: kubectl ssh -p pod-name -u user
+  
+  - **Requires that you have uploaded your ssh key to GCP or access will be denied!**
 
 
