@@ -49,4 +49,4 @@ A collection of plugins for kubectl integration
   
   - Usage: kubectl ssh -p pod-name -u user
   
-  -- *Requires that you have uploaded your ssh key to GCP or access will be denied!*
+  -- *Requires that you have uploaded your ssh key to GCP or access will be denied! https://console.cloud.google.com/compute/metadata/sshKeys*
