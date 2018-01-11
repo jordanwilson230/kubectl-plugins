@@ -1,4 +1,4 @@
-*Seriously someone just do this readme for me...lol*
+*Any/all PRs for this readme file will be instantly and automatically merged, ;P*
 
 # kubectl-plugins
 
