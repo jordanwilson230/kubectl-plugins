@@ -41,7 +41,7 @@ A collection of plugins for kubectl integration
  ### kubectl get-node-ip
   - Outputs the node location and IP for a given application e.g., kubectl get-nodes ingestion
   
-  - Usage: kubectl get-node-ip <app or statefulset name>
+  - Usage: kubectl get-node-ip (app or statefulset name)
 
 
  ### kubectl ssh
