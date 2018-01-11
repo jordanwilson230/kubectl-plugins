@@ -6,14 +6,14 @@ A collection of plugins for kubectl integration
  - Requires jq ( brew install jq )
 
 ## Install on Linux
-  Just create the ~/.kube/plugins folder and copy the plugin folders there..
+  Just run the install-kubectl-plugins script and source your ~/.bash_profile!
   
 ## Install via homebrew: 
-  **brew tap bitbrew/kubectl**
+  **brew tap bitbrew/kubectl-plugins**
 
-  **brew install plugins**
+  **brew install kubectl-plugins**
 
-  **install-plugins**
+  **install-kubectl-plugins**
 
 
 ### kubectl deploy [options]
