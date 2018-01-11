@@ -1,0 +1,1 @@
+This plugin was setup for internal use but it shouldn't take much to modify it for your own use. Start by removing the Docker search URL (nexus.bitbrew.com) and replacing it with your own registry or leave it blank to search docker hub.
