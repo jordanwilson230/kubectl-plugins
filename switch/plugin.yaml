@@ -1,0 +1,5 @@
+name: "switch"
+shortDesc: "Switch context"
+longDesc: >
+  Switches your current context to the namespace specified.
+command: ./namespace.sh $@

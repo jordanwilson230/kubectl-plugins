@@ -1,0 +1,6 @@
+name: "uptime"
+shortDesc: "Uptime shows pods by age"
+longDesc: >
+  Uptime shows pods from the current namespace by age.
+command: ./uptime.rb
+

@@ -1,0 +1,3 @@
+name: "get-node-ip"
+shortDesc: "Outputs the external IPs for the pods of a given statefulset e.g., kubectl get-nodes ingestion"
+command: ./get-node-ip.sh

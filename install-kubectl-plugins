@@ -1,0 +1,32 @@
+#!/bin/bash
+set -e
+
+uname -a | grep -i Darwin && mac=true
+
+
+echo -e "\nAppending to $HOME/.bash_profile"
+ex '+g/function kubectl() { case /d' -cwq ~/.bash_profile
+
+echo '
+function kubectl() { case $* in "deploy"*) shift 1; command kubectl plugin deploy --path=$PWD "$@" ;; *"ssh"* ) shift 1; command kubectl plugin ssh "$@";; *"get-node-ip"* )shift 1; command kubectl plugin get-node-ip "$@" ;; *"switch" )shift 1; command kubectl config get-contexts ;; *"switch"* ) shift 1; command kubectl plugin switch "$@" ;; *"uptime"* ) shift 1; command kubectl plugin uptime ;; * ) command kubectl "$@" ;; esac }
+'  >> ~/.bash_profile
+
+# Move plugin folders to required location
+echo -e "\nMoving files into ${HOME}/.kube/plugins"
+mkdir -p ~/.kube/plugins
+
+if [[ "$mac" == "true" ]]; then
+	cp -r /usr/local/Cellar/kubectl-plugins/kubectl/libexec/{ssh,uptime,deploy,switch,get-node-ip} ~/.kube/plugins/
+else
+	mydir="${0%/*}"
+	cp -r ${mydir}/{ssh,uptime,deploy,switch,get-node-ip} ~/.kube/plugins/
+fi
+
+for file in $(find ~/.kube/plugins/ -name '*.sh' -type f ); do chmod +x ${file}; done
+
+kubectl plugin
+
+echo -e "\n\nINSTALL COMPLETE!\n"
+[[ "$mac" == "true" ]] && cat /usr/local/Cellar/kubectl-plugins/kubectl/README.md || cat ${mydir}/README.md
+
+echo -e "\n\nPlease open a new terminal or source ~/.bash_profile\n"
