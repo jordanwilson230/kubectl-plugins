@@ -1,6 +1,6 @@
 #!/bin/bash
 
-! $(hash jq 2>/dev/null) && echo -e "\nMissing dependency: jq\n" && echo exiting
+! $(hash jq 2>/dev/null) && echo -e "\nMissing dependency: jq\n" && exit
 ## Read user args
 pod="${KUBECTL_PLUGINS_LOCAL_FLAG_POD:-}"
 [ -z "$KUBECTL_PLUGINS_LOCAL_FLAG_POD" ] && echo -e "\nPlease provide pod name [-p flag].\n" && exit
