@@ -1,3 +1,5 @@
+**_Notes_**
+*All coding was written to maintain compatibility across both BSD and GNU.
 *Any/all PRs for this readme file will be instantly and automatically merged, ;P*
 
 # kubectl-plugins
