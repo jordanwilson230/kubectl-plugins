@@ -18,7 +18,7 @@ node_name=$(kubectl get pod ${pod} -o json | jq -r '.spec.nodeName')
 node_ip=$(kubectl get node ${node_name}  -o json | jq -r '.status.addresses' | jq -r '.[] | select(.type=="ExternalIP").address')
 
 ## Get container
-container="$(kubectl get po "$pod" -o json | grep  '"containerID"' | cut -d '/' -f3 | cut -b1-12)"
+container="$(kubectl get po "$pod" -o json | grep  '"containerID"' | head -n1 | cut -d '/' -f3 | cut -b1-12)"
 
 ## SSH to container
 ssh -t $node_ip "docker exec -it $user $container $command"  2>/dev/null
