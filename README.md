@@ -1,4 +1,8 @@
-*Seriously someone just do this readme for me...lol*
+**_Quick Note_**
+
+*All coding was written to maintain compatibility across both BSD and GNU.*
+
+*Also, any/all PRs for this readme file will be instantly and automatically merged, ;P*
 
 # kubectl-plugins
 
@@ -6,14 +10,14 @@ A collection of plugins for kubectl integration
  - Requires jq ( brew install jq )
 
 ## Install on Linux
-  Just create the ~/.kube/plugins folder and copy the plugin folders there..
+  Just run the install-kubectl-plugins script and source your ~/.bash_profile!
   
 ## Install via homebrew: 
-  **brew tap bitbrew/kubectl**
+  **brew tap bitbrew/kubectl-plugins**
 
-  **brew install plugins**
+  **brew install kubectl-plugins**
 
-  **install-plugins**
+  **install-kubectl-plugins**
 
 
 ### kubectl deploy [options]
@@ -41,12 +45,12 @@ A collection of plugins for kubectl integration
  ### kubectl get-node-ip
   - Outputs the node location and IP for a given application e.g., kubectl get-nodes ingestion
   
-  - Usage: kubectl get-node-ip <app or statefulset name>
+  - Usage: kubectl get-node-ip (app or statefulset name)
 
 
  ### kubectl ssh
   - Like kubectl exec, but offers a --user flag to exec as root (or any other user) if you're running in GKE
   
   - Usage: kubectl ssh -p pod-name -u user
-
-
+  
+  -- *Requires that you have uploaded your ssh key to GCP or access will be denied! https://console.cloud.google.com/compute/metadata/sshKeys*
