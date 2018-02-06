@@ -41,11 +41,15 @@ resource_type="$(kubectl apply -f ${KUBECTL_PLUGINS_LOCAL_FLAG_FILE} --dry-run -
 
 ## If the file is a configmap
 if [[ "$resource_type" =~ "ConfigMap" ]] || [[ "$resource_type" =~ "NetworkPolicy" ]]; then
-   [[ "$KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE" == "production" ]] && KUBECTL_PLUGINS_TEMP_FLAG_NAMESPACE="" || KUBECTL_PLUGINS_TEMP_FLAG_NAMESPACE="${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}." && [[ "$KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE" == "staging" ]] && KUBECTL_PLUGINS_TEMP_FLAG='master'
+   KUBECTL_PLUGINS_TEMP_FLAG_NAMESPACE="$KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE"
+   [[ "$KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE" == "production" ]] && KUBECTL_PLUGINS_TEMP_FLAG_NAMESPACE=""
+   [[ "$KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE" == "staging" ]] && KUBECTL_PLUGINS_TEMP_FLAG_NAMESPACE="master."
+
    cat "$KUBECTL_PLUGINS_LOCAL_FLAG_FILE" | sed -e "s|[Ss[Aa][Nn][Dd][Bb][Oo][Xx]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; s|[Ss][Tt][Aa][Gg][Ii][Nn][Gg]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; s|[Pp][Rr][Ee][Pp][Rr][Oo][Dd]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; \
-       s|[Pp][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; s|https://dashboard.bitbrew.com|https://${KUBECTL_PLUGINS_TEMP_FLAG_NAMESPACE}dashboard.bitbrew.com|g" | kubectl -n $KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE apply -f - $KUBECTL_PLUGINS_LOCAL_FLAG_DRY
+       s|[Pp][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; s|\(.*\)https://\(.*\).dashboard.bitbrew.com|\1${KUBECTL_PLUGINS_TEMP_FLAG_NAMESPACE}dashboard.bitbrew.com|g" | kubectl -n $KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE apply -f - $KUBECTL_PLUGINS_LOCAL_FLAG_DRY
    echo -e "Updates applied."
    exit 0
+
 elif [[ "$resource_type" =~ "StatefulSet" ]] || [[ "$resource_type" =~ "Deployment" ]]; then
   MANIFEST_IMAGE="$(kubectl -n ${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE} apply --dry-run -f ${KUBECTL_PLUGINS_LOCAL_FLAG_FILE} -o=jsonpath='{..image}')"
   RUNNING_IMAGE="$(kubectl -n ${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE} get -f ${KUBECTL_PLUGINS_LOCAL_FLAG_FILE} -o=jsonpath='{..containers..image}' 2>/dev/null)" || RUNNING_IMAGE=""
