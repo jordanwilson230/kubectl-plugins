@@ -59,7 +59,7 @@ fi
 if [[ ! -z "$KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE" ]]; then
    KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE="nexus.bitbrew.com/${KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE}"
    cat "$KUBECTL_PLUGINS_LOCAL_FLAG_FILE" | sed -e "s|${MANIFEST_IMAGE}|${KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE}|g; s|[Ss[Aa][Nn][Dd][Bb][Oo][Xx]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; s|[Ss][Tt][Aa][Gg][Ii][Nn][Gg]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; s|[Pp][Rr][Ee][Pp][Rr][Oo][Dd]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; s|[Pp][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g" | kubectl -n ${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE} apply -f - $KUBECTL_PLUGINS_LOCAL_FLAG_DRY
-   echo -e "\n\n### Summary ###\nNamespace: ${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}\nPrevious Image: ${RUNNING_IMAGE}\n Current Image:  ${KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE}\n"
+   echo -e "\n\n### Summary ###\nNamespace: ${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}\nPrevious Image: ${RUNNING_IMAGE}\nCurrent Image:    ${KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE}\n"
  # If not provided, use what is in the user supplied manifest.
 else
    cat "$KUBECTL_PLUGINS_LOCAL_FLAG_FILE" | sed -e "s|[Ss[Aa][Nn][Dd][Bb][Oo][Xx]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; s|[Ss][Tt][Aa][Gg][Ii][Nn][Gg]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; s|[Pp][Rr][Ee][Pp][Rr][Oo][Dd]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; s|[Pp][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g" | kubectl -n $KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE apply -f - $KUBECTL_PLUGINS_LOCAL_FLAG_DRY
