@@ -1,0 +1,5 @@
+name: "docker"
+shortDesc: "Wrapper for working with GCR docker in kubectl"
+longDesc: >
+  Supports "kubectl docker login", more to come.
+command: ./login.sh $@
