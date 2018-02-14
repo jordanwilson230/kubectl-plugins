@@ -8,7 +8,7 @@ echo -e "\nAppending to $HOME/.bash_profile"
 ex '+g/function kubectl() { case /d' -cwq ~/.bash_profile
 
 echo '
-function kubectl() { case $* in "deploy"*) shift 1; command kubectl plugin deploy --path=$PWD "$@" ;; *"docker"* ) shift 1; command kubectl plugin docker "$@";; *"ssh"* ) shift 1; command kubectl plugin ssh "$@";; *"get-node-ip"* )shift 1; command kubectl plugin get-node-ip "$@" ;; *"switch" )shift 1; command kubectl config get-contexts ;; *"switch"* ) shift 1; command kubectl plugin switch "$@" ;; *"uptime"* ) shift 1; command kubectl plugin uptime ;; * ) command kubectl "$@" ;; esac }
+function kubectl() { case $* in "deploy"*) shift 1; command kubectl plugin deploy --path=$PWD "$@" ;; *"ssh"* ) shift 1; command kubectl plugin ssh "$@";; *"get-node-ip"* )shift 1; command kubectl plugin get-node-ip "$@" ;; *"switch" )shift 1; command kubectl config get-contexts ;; *"switch"* ) shift 1; command kubectl plugin switch "$@" ;; *"uptime"* ) shift 1; command kubectl plugin uptime ;; * ) command kubectl "$@" ;; esac }
 '  >> ~/.bash_profile
 
 # Move plugin folders to required location
