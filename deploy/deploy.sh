@@ -17,16 +17,23 @@ KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE="${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE:-$K
 ## If user passes the --image flag without a tag (i.e., -i zookeeper), search the docker registry and present a list of options.
 if [[ ! -z "$KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE" ]] && [[ ! "$KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE" =~ ":" ]]; then
     IFS=$'\n'
-    available_images=($(docker search --limit=100 "${DOCKER_REGISTRY}/$KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE"))
+    if [[ "$DOCKER_REGISTRY" =~ "gcr.io" ]]; then
+        available_images=($(gcloud container images list-tags ${DOCKER_REGISTRY}/${KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE} --limit=20 --format='get(tags,timestamp.datetime)'))
+        available_images=(${available_images[*]/#/$KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE:})
+    else
+        available_images=($(docker search --limit=25 "${DOCKER_REGISTRY}/$KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE"))
+    fi
+
  # Print out versions
     for image in ${!available_images[@]}; do
-        echo "${available_images[$image]/#/$image:  }" | sed 's|^0:|  |g'
-    done | sed 's|^\([0-9]:\)|\1 |g'
+        echo "${available_images[$image]/#/$image:  }" 
+    done | grep -v STAR | sed 's|^\([0-9]:\)|\1 |g'
 
  # Set the version to user's selection
     echo -e "\nSelect the number of the image to deploy:"
     read REPLY
-    KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE=$(echo "${available_images[*]}" | grep -v STARS | head -n $REPLY | tail -n1 | cut -d ' ' -f1 | cut -d '/' -f2)
+    [[ "$DOCKER_REGISTRY" =~ "gcr.io" ]] && let REPLY=REPLY+1
+    KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE=$(echo "${available_images[*]}" | grep -v STARS | head -n $REPLY | tail -n1 | cut -d $'\t' -f1 | cut -d ' ' -f1 | cut -d '/' -f2 | sed 's|latest\;||g')
     echo -e "\nSetting image to $KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE"
 fi
 
@@ -71,7 +78,7 @@ fi
 # Replaces anything namespace specific in the file with the targeted namespace.
 # If image is passed, tell kubectl to use that instead of what is in the user's manifest.
 if [[ ! -z "$KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE" ]]; then
-   KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE="{DOCKER_REGISTRY}/${KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE}"
+   KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE="${DOCKER_REGISTRY}/${KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE}"
    cat "$KUBECTL_PLUGINS_LOCAL_FLAG_FILE" | sed -e "s|${MANIFEST_IMAGE}|${KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE}|g; s|[Ss[Aa][Nn][Dd][Bb][Oo][Xx]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; s|[Ss][Tt][Aa][Gg][Ii][Nn][Gg]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; s|[Pp][Rr][Ee][Pp][Rr][Oo][Dd]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g; s|[Pp][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn]|${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}|g" | kubectl -n ${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE} apply -f - $KUBECTL_PLUGINS_LOCAL_FLAG_DRY
    echo -e "\n\n### Summary ###\nNamespace: ${KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE}\nPrevious Image: ${RUNNING_IMAGE}\nCurrent Image:    ${KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE}\n"
 else
