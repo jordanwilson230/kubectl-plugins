@@ -1,5 +1,3 @@
-![screen shot 2018-02-13 at 10 52 28 pm](https://user-images.githubusercontent.com/22456127/36187142-2bf677a0-1111-11e8-9423-7420cbc50a5a.png)
-
 
 **_Quick Note_**
 
@@ -29,11 +27,13 @@ A collection of plugins for kubectl integration
 
 
 ### kubectl deploy [options]
+![screen shot 2018-02-13 at 10 52 28 pm](https://user-images.githubusercontent.com/22456127/36187142-2bf677a0-1111-11e8-9423-7420cbc50a5a.png)
+
    [-f, --file] (Ex: -f 20-actions.yml) File to deploy. At this time, only accepts a single file. Required.
   
-   [-i, --image] (Ex: -i kafka:v1.0.0 **or** -i kafka) Docker image/tag to use. If only the image name is passed, it displays a list of images to choose from. Optional.
+   [-i, --image] (Optional. Ex: -i kafka:v1.0.0 **or** -i kafka) Docker image/tag to use. Overwrites what's set in the manifest. If only the image name is passed, it displays a list of images to choose from. Optional.
   
-   [-d, --dry-run] (Ex: -d true) Runs the command in dry-run mode. Optional.
+   [-d, --dry] (Ex: -d true) Runs the command in dry-run mode. Optional.
   
    [-n, --namespace] (Ex: -n preprod) Namespace/Environment to deploy to (defaults to current ns). Optional
    
@@ -45,12 +45,16 @@ A collection of plugins for kubectl integration
 
 
  ### kubectl switch [options]
+![screen shot 2018-02-13 at 11 06 46 pm](https://user-images.githubusercontent.com/22456127/36187488-ab54a83a-1113-11e8-8391-4e1361afeaef.png)
+
   - View current namespace: kubectl switch
   - Switch namespace: kubectl switch preprod
   - Switch cluster: kubectl switch cluster
 
 
  ### kubectl get-node-ip
+![screen shot 2018-02-13 at 11 05 43 pm](https://user-images.githubusercontent.com/22456127/36187503-c2063dfa-1113-11e8-919d-0c0d268f8ed3.png)
+
   - Outputs the node location and IP for a given application e.g., kubectl get-nodes ingestion
   
   - Usage: kubectl get-node-ip (app or statefulset name)
