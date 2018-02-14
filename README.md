@@ -1,8 +1,13 @@
 **_Quick Note_**
 
+*You can run these plugins without having to use kubectl's "plugin" command at runtime. Just, "kubectl ssh, or kubectl deploy", for example.*
+
 *All coding was written to maintain compatibility across both BSD and GNU.*
+
 *Some bits are tailored to fit our in-house use-cases here at BitBrew, but nothing major.*
+
 *Also, any/all PRs for this readme file will be instantly and automatically merged, ;P*
+
 
 # kubectl-plugins
 
