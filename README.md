@@ -1,3 +1,6 @@
+![screen shot 2018-02-13 at 10 52 28 pm](https://user-images.githubusercontent.com/22456127/36187142-2bf677a0-1111-11e8-9423-7420cbc50a5a.png)
+
+
 **_Quick Note_**
 
 *You can run these plugins without having to use kubectl's "plugin" command at runtime. Just, "kubectl ssh, or kubectl deploy", for example.*
