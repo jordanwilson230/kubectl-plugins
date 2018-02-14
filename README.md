@@ -4,7 +4,7 @@
 
 *All coding was written to maintain compatibility across both BSD and GNU.*
 
-*Some bits are tailored to fit our in-house use-cases here at BitBrew, but nothing major.*
+*Some bits are tailored to fit our in-house needs here at BitBrew, but nothing major.*
 
 *Also, any/all PRs for this readme file will be instantly and automatically merged, ;P*
 
