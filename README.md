@@ -53,7 +53,7 @@ A collection of plugins for kubectl integration
 
 
  ### kubectl get-node-ip
-![screen shot 2018-02-13 at 11 05 43 pm](https://user-images.githubusercontent.com/22456127/36187503-c2063dfa-1113-11e8-919d-0c0d268f8ed3.png)
+![nodeip-get](https://user-images.githubusercontent.com/22456127/36187929-97377a8c-1116-11e8-90be-65448752b895.png)
 
   - Outputs the node location and IP for a given application e.g., kubectl get-nodes ingestion
   
