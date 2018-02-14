@@ -25,13 +25,13 @@ if [[ ! -z "$KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE" ]] && [[ ! "$KUBECTL_PLUGINS_LOCA
     fi
 
  # Print out versions
+    echo ''
     for image in ${!available_images[@]}; do
         echo "${available_images[$image]/#/$image:  }" 
     done | grep -v STAR | sed 's|^\([0-9]:\)|\1 |g'
 
  # Set the version to user's selection
-    echo -e "\nSelect the number of the image to deploy:"
-    read REPLY
+    echo -e "\n" ; read -p "Select the number of the image to deploy: " REPLY
     [[ "$DOCKER_REGISTRY" =~ "gcr.io" ]] && let REPLY=REPLY+1
     KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE=$(echo "${available_images[*]}" | grep -v STARS | head -n $REPLY | tail -n1 | cut -d $'\t' -f1 | cut -d ' ' -f1 | cut -d '/' -f2 | sed 's|latest\;||g')
     echo -e "\nSetting image to $KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE"
