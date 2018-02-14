@@ -1,14 +1,10 @@
 
 **_Quick Note_**
 
-*You can run these plugins without having to use kubectl's "plugin" command at runtime. Just, "kubectl ssh, or kubectl deploy", for example.*
-
-*All coding was written to maintain compatibility across both BSD and GNU.*
-
-*Some bits are tailored to fit our in-house needs here at BitBrew, but nothing major.*
-
-*Also, any/all PRs for this readme file will be instantly and automatically merged, ;P*
-
+- *You can run these plugins without having to use kubectl's "plugin" command at runtime. Just, "kubectl ssh, or kubectl deploy", for example.*
+- *All coding was written to maintain compatibility across both BSD and GNU.*
+- *Some bits are tailored to fit our in-house needs here at BitBrew, but nothing major.*
+- *Also, any/all PRs for this readme file will be instantly and automatically merged, ;P*
 
 # kubectl-plugins
 
@@ -19,12 +15,7 @@ A collection of plugins for kubectl integration
   Just run the install-kubectl-plugins script and source your ~/.bash_profile!
   
 ## Install via homebrew: 
-  **brew tap bitbrew/kubectl-plugins**
-
-  **brew install kubectl-plugins**
-
-  **install-kubectl-plugins**
-
+  **brew tap bitbrew/kubectl-plugins; brew install kubectl-plugins; install-kubectl-plugins**
 
 ### kubectl deploy [options]
 ![screen shot 2018-02-13 at 10 52 28 pm](https://user-images.githubusercontent.com/22456127/36187142-2bf677a0-1111-11e8-9423-7420cbc50a5a.png)
