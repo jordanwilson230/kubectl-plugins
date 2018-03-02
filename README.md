@@ -18,7 +18,7 @@ A collection of plugins for kubectl integration
   **brew tap bitbrew/kubectl-plugins; brew install kubectl-plugins; install-kubectl-plugins**
 
 ### kubectl deploy [options]
-![screen shot 2018-02-13 at 10 52 28 pm](https://user-images.githubusercontent.com/22456127/36187142-2bf677a0-1111-11e8-9423-7420cbc50a5a.png)
+![deploy](https://user-images.githubusercontent.com/22456127/36905632-d3f22eca-1e01-11e8-8d65-33dd556c8544.gif)
 
    [-f, --file] (Ex: -f 20-actions.yml) File to deploy. At this time, only accepts a single file. Required.
   
@@ -36,7 +36,7 @@ A collection of plugins for kubectl integration
 
 
  ### kubectl switch [options]
-![screen shot 2018-02-13 at 11 06 46 pm](https://user-images.githubusercontent.com/22456127/36187488-ab54a83a-1113-11e8-8391-4e1361afeaef.png)
+![switch](https://user-images.githubusercontent.com/22456127/36905617-cd540052-1e01-11e8-86a1-d0fc6cccf6a2.gif)
 
   - View current namespace: kubectl switch
   - Switch namespace: kubectl switch preprod
@@ -44,14 +44,14 @@ A collection of plugins for kubectl integration
 
 
  ### kubectl get-node-ip
-![nodeip-get](https://user-images.githubusercontent.com/22456127/36187929-97377a8c-1116-11e8-90be-65448752b895.png)
-
+![get-node-ip](https://user-images.githubusercontent.com/22456127/36905626-d2652a9e-1e01-11e8-87a8-9942fd5b2307.gif)
   - Outputs the node location and IP for a given application e.g., kubectl get-nodes ingestion
   
   - Usage: kubectl get-node-ip (app or statefulset name)
 
 
  ### kubectl ssh
+ ![ssh](https://user-images.githubusercontent.com/22456127/36905621-d0c89ff4-1e01-11e8-969e-6ad5e8767b92.gif)
   - Like kubectl exec, but offers a --user flag to exec as root (or any other user) if you're running in GKE
   
   - Usage: kubectl ssh -p pod-name -u user
