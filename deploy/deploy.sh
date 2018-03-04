@@ -43,7 +43,7 @@ context="gke_bb-hub-01_us-central1-a_${cluster}"
 
 if [[ "$KUBECTL_PLUGINS_LOCAL_FLAG_FILE" =~ "external-dns" ]]; then
    scope=${cluster/hub-/} ; scope=${scope/hub/production}
-   cat "$KUBECTL_PLUGINS_LOCAL_FLAG_FILE" | sed -e "s|--namespace=\(.*\)|--namespace=${scope}|g; s|Pixie|$cluster|g; s|current-context: \(.*\)|current-context: $context|g" | kubectl -n default apply -f - $KUBECTL_PLUGINS_LOCAL_FLAG_DRY
+   cat "$KUBECTL_PLUGINS_LOCAL_FLAG_FILE" | sed -e "s|--namespace=staging|--namespace=${scope}|g; s|Pixie|$cluster|g; s|current-context: \(.*\)|current-context: $context|g" | kubectl -n default apply -f - $KUBECTL_PLUGINS_LOCAL_FLAG_DRY
    exit 0
 fi
 
