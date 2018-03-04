@@ -37,14 +37,23 @@ if [[ ! -z "$KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE" ]] && [[ ! "$KUBECTL_PLUGINS_LOCA
     echo -e "\nSetting image to $KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE"
 fi
 
+# Set cluster specific values
+cluster=$(kubectl config current-context | rev | cut -d '_' -f1 | rev)
+context="gke_bb-hub-01_us-central1-a_${cluster}"
 
-## Set any environment/namespace specific variables that must be hardcoded
-case $KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE in
-  "staging") CLUSTER_IP='10.51.240.4' ; DASHBOARD_URL_PREFIX='master.' ;;
-  "preprod") CLUSTER_IP='10.51.240.5' ; DASHBOARD_URL_PREFIX='preprod.' ;;
-  "production") CLUSTER_IP='10.51.240.6' ; DASHBOARD_URL_PREFIX='' ;;
+if [[ "$KUBECTL_PLUGINS_LOCAL_FLAG_FILE" =~ "external-dns" ]]; then
+   scope=${cluster/hub-/} ; scope=${scope/hub/production}
+   cat "$KUBECTL_PLUGINS_LOCAL_FLAG_FILE" | sed -e "s|--namespace=\(.*\)|--namespace=${scope}|g; s|Pixie|$cluster|g; s|current-context: \(.*\)|current-context: $context|g" | kubectl -n default apply -f - $KUBECTL_PLUGINS_LOCAL_FLAG_DRY
+   exit 0
+fi
+
+## Set any environment/cluster/namespace specific variables that must be hardcoded
+case $cluster in #$KUBECTL_PLUGINS_LOCAL_FLAG_NAMESPACE in
+  "hub-staging") CLUSTER_IP='10.43.240.4' ; DASHBOARD_URL_PREFIX='master.' ;;
+  "hub-preprod") CLUSTER_IP='10.51.240.5' ; DASHBOARD_URL_PREFIX='preprod.' ;;
+  "hub") CLUSTER_IP='10.51.240.6' ; DASHBOARD_URL_PREFIX='' ;;
+  *) echo -e "\n\nInvalid namespace.\n" ; exit 1 ;;
 esac
-
 
 if [[ "$KUBECTL_PLUGINS_LOCAL_FLAG_IMAGE" =~ "$DOCKER_REGISTRY" ]]; then
     kubectl plugin deploy -h
