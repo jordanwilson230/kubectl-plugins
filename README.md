@@ -12,7 +12,7 @@ A collection of plugins for kubectl integration
 
 ## Install on Linux/Mac
   Just run the install-plugins script and source your ~/.bash_profile!
-  Important: 
+  To remove, delete the ~/.kube/plugins folder and comment the entry (a one line kubectl function) in your bash_profile.
   
 ### kubectl deploy [options]
 ![deploy](https://user-images.githubusercontent.com/22456127/36905632-d3f22eca-1e01-11e8-8d65-33dd556c8544.gif)
