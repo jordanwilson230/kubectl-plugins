@@ -1,5 +1,5 @@
 name: "ssh"
-shortDesc: "Run a shell on the container using a given username. Usage: kubectl ssh -u root ingestion-0"
+shortDesc: "Run a shell on the container using a given username. It is required that you first upload your ssh key in GCP. Usage: kubectl ssh -u root ingestion-0"
 example: "kubectl ssh rabbitmq-1 -u root"
 command: ./ssh.sh
 flags:

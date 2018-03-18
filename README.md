@@ -8,14 +8,12 @@
 # kubectl-plugins
 
 A collection of plugins for kubectl integration
- - Requires jq ( brew install jq )
+ - Requires jq ( brew/apt/yum install jq )
 
-## Install on Linux
-  Just run the install-kubectl-plugins script and source your ~/.bash_profile!
+## Install on Linux/Mac
+  Just run the install-plugins script and source your ~/.bash_profile!
+  Important: 
   
-## Install via homebrew: 
-  **brew tap bitbrew/kubectl-plugins; brew install kubectl-plugins; install-kubectl-plugins**
-
 ### kubectl deploy [options]
 ![deploy](https://user-images.githubusercontent.com/22456127/36905632-d3f22eca-1e01-11e8-8d65-33dd556c8544.gif)
 
@@ -30,23 +28,22 @@ A collection of plugins for kubectl integration
    Example: kubectl deploy -f 40-actions.yml -i actions -n staging
 
 
- ### kubectl uptime
-  - Displays total uptime for pods/statefulsets in the user namespace.
-
-
  ### kubectl switch [options]
 ![switch](https://user-images.githubusercontent.com/22456127/36905617-cd540052-1e01-11e8-86a1-d0fc6cccf6a2.gif)
 
   - View current namespace: kubectl switch
   - Switch namespace: kubectl switch preprod
-  - Switch cluster: kubectl switch cluster
+  - Switch cluster: kubectl switch cluster staging
 
+### kubectl verify
+  - Non-interactive plugin that prompts users before executing a create/apply/deploy/delete command in a production namespace.
+  - If you do not want this, change your ~/.bash_profile and remove the part of the function mentioning it.
 
  ### kubectl get-node-ip
 ![get-node-ip](https://user-images.githubusercontent.com/22456127/36905626-d2652a9e-1e01-11e8-87a8-9942fd5b2307.gif)
-  - Outputs the node location and IP for a given application e.g., kubectl get-nodes ingestion
+  - Outputs the node location and IP for a given application e.g., kubectl get-nodes rabbitmq
   
-  - Usage: kubectl get-node-ip (app or statefulset name)
+  - Usage: kubectl get-node-ip (app or statefulset name...not the pod name)
 
 
  ### kubectl ssh
@@ -56,3 +53,7 @@ A collection of plugins for kubectl integration
   - Usage: kubectl ssh -p pod-name -u user
   
   -- *Requires that you have uploaded your ssh key to GCP or access will be denied! https://console.cloud.google.com/compute/metadata/sshKeys*
+
+
+ ### kubectl uptime
+  - Displays total uptime for pods/statefulsets in the user namespace.

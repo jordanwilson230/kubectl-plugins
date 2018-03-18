@@ -5,6 +5,7 @@
 pod="${KUBECTL_PLUGINS_LOCAL_FLAG_POD:-}"
 [ -z "$KUBECTL_PLUGINS_LOCAL_FLAG_POD" ] && echo -e "\nPlease provide pod name [-p flag].\n" && exit
 
+username="jordan"
 user="${KUBECTL_PLUGINS_LOCAL_FLAG_USER:-}"
 [ ! -z "$user" ] && user='-u '$user'' || echo -e "No user specified [-u]. Using default...\n"
 command="${command:-bash}"
@@ -21,4 +22,4 @@ node_ip=$(kubectl get node ${node_name}  -o json | jq -r '.status.addresses' | j
 container="$(kubectl get po "$pod" -o json | grep  '"containerID"' | head -n1 | cut -d '/' -f3 | cut -b1-12)"
 
 ## SSH to container
-ssh -t $node_ip "docker exec -it $user $container $command"  2>/dev/null
+ssh -t ${username}@${node_ip} "docker exec -it $user $container $command"  2>/dev/null
