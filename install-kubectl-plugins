@@ -16,16 +16,6 @@ mydir="${0%/*}"
 cp -r ${mydir}/{verify,ssh,uptime,deploy,switch,get-node-ip} ~/.kube/plugins/
 
 for file in $(find ~/.kube/plugins/ -name '*.sh' -type f ); do chmod +x ${file}; done
-user=$(gcloud auth list 2>/dev/null| grep 'bitbrew.com' | sed 's|^*\(.*\)@\(.*\)|\1|g' | tr -d ' ') 2>/dev/null
-
-if [[ "$user" ]]; then
-  echo -e "\nYour gcloud username is typically the first part of your email address, before the '@' "
-  read -p "Is your gcloud username ${user}? Press 'c' to confirm, or 'e' to edit: " reply
-  [[ "$reply" == "e" ]] && read -p "Enter your gcloud username: " user
-fi
-
-[[ "$user" ]] && cat ./ssh/ssh.sh | sed 's|username=\(.*\)|username="'$user'"|g' > ~/.kube/plugins/ssh/ssh.sh
 
 echo -e "\n[+] INSTALL COMPLETE"
-
 echo -e "\n\n### NOTE:\n# Please open a new terminal or 'source ~/.bash_profile'\n# For an overview of the plugins that have been installed, run 'kubectl plugin', or for usage of a specific plugin, 'kubectl <pluginName> -h'\n# Gifs and detailed usage is avaiable at https://github.com/BitBrew/kubectl-plugins"

@@ -1,13 +1,14 @@
 name: "ssh"
-shortDesc: "Run a shell on the container using a given username. It is required that you first upload your ssh key in GCP. Usage: kubectl ssh -u root ingestion-0"
-example: "kubectl ssh rabbitmq-1 -u root"
-command: ./ssh.sh
+shortDesc: "Exec user plugin via mikelorant"
+longDesc: >
+  Exec as a specified user into a container.
+example: ""
+command: "./ssh.sh"
 flags:
   - name: "user"
     shorthand: "u"
-    desc: "Run as user."
-    defValue: ""
-  - name: "pod"
-    shorthand: "p"
-    desc: "pod name"
-    defValue: ""
+    desc: "Username or UID. If omitted, will use root"
+    defValue: "root"
+  - name: "container"
+    shorthand: "c"
+    desc: "Container name. If omitted, the first container in the pod will be chosen"

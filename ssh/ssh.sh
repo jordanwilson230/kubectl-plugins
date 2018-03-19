@@ -1,25 +1,65 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-! $(hash jq 2>/dev/null) && echo -e "\nMissing dependency: jq\n" && exit
-## Read user args
-pod="${KUBECTL_PLUGINS_LOCAL_FLAG_POD:-}"
-[ -z "$KUBECTL_PLUGINS_LOCAL_FLAG_POD" ] && echo -e "\nPlease provide pod name [-p flag].\n" && exit
+POD=${1}
+COMMAND=${2:-bash}
 
-username="jordan"
-user="${KUBECTL_PLUGINS_LOCAL_FLAG_USER:-}"
-[ ! -z "$user" ] && user='-u '$user'' || echo -e "No user specified [-u]. Using default...\n"
-command="${command:-bash}"
+KUBECTL=${KUBECTL_PLUGINS_CALLER}
+NAMESPACE=${KUBECTL_PLUGINS_CURRENT_NAMESPACE}
+USER=${KUBECTL_PLUGINS_LOCAL_FLAG_USER}
+export CONTAINER=${KUBECTL_PLUGINS_LOCAL_FLAG_CONTAINER}
 
+NODENAME=$( $KUBECTL --namespace ${NAMESPACE} get pod ${POD} -o go-template='{{.spec.nodeName}}' )
 
-## Get node. If no value is returned, assume no pod found.
-node_name=$(kubectl get pod ${pod} -o json | jq -r '.spec.nodeName')
-[ -z "$node_name" ] && exit
+if [[ -n ${CONTAINER} ]]; then
+  DOCKER_CONTAINERID=$( eval $KUBECTL --namespace ${NAMESPACE} get pod ${POD} -o go-template="'{{ range .status.containerStatuses }}{{ if eq .name \"${CONTAINER}\" }}{{ .containerID }}{{ end }}{{ end }}'" )
+else
+  DOCKER_CONTAINERID=$( $KUBECTL --namespace ${NAMESPACE} get pod ${POD} -o go-template='{{ (index .status.containerStatuses 0).containerID }}' )
+fi
+CONTAINERID=${DOCKER_CONTAINERID#*//}
 
-## Get node IP
-node_ip=$(kubectl get node ${node_name}  -o json | jq -r '.status.addresses' | jq -r '.[] | select(.type=="ExternalIP").address')
+read -r -d '' OVERRIDES <<EOF
+{
+    "apiVersion": "v1",
+    "spec": {
+        "containers": [
+            {
+                "image": "docker",
+                "name": "docker",
+                "stdin": true,
+                "stdinOnce": true,
+                "tty": true,
+                "restartPolicy": "Never",
+                "args": [
+                  "exec",
+                  "-it",
+                  "-u",
+                  "${USER}",
+                  "${CONTAINERID}",
+                  "${COMMAND}"
+                ],
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/docker.sock",
+                        "name": "docker"
+                    }
+                ]
+            }
+        ],
+        "nodeSelector": {
+          "kubernetes.io/hostname": "${NODENAME}"
+        },
+        "volumes": [
+            {
+                "name": "docker",
+                "hostPath": {
+                    "path": "/var/run/docker.sock",
+                    "type": "File"
+                }
+            }
+        ]
+    }
+}
+EOF
 
-## Get container
-container="$(kubectl get po "$pod" -o json | grep  '"containerID"' | head -n1 | cut -d '/' -f3 | cut -b1-12)"
+eval kubectl run -it --rm --restart=Never --image=docker --overrides="'${OVERRIDES}'" docker
 
-## SSH to container
-ssh -t ${username}@${node_ip} "docker exec -it $user $container $command"  2>/dev/null

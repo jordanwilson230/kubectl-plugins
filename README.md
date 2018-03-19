@@ -8,12 +8,20 @@
 # kubectl-plugins
 
 A collection of plugins for kubectl integration
- - Requires jq ( brew/apt/yum install jq )
+ - Some plugins Require jq ( brew/apt/yum install jq )
 
 ## Install on Linux/Mac
   Just run the install-plugins script and source your ~/.bash_profile!
   To remove, delete the ~/.kube/plugins folder and comment the entry (a one line kubectl function) in your bash_profile.
   
+ ### kubectl ssh
+ ![ssh](https://user-images.githubusercontent.com/22456127/36905621-d0c89ff4-1e01-11e8-969e-6ad5e8767b92.gif)
+  - Like kubectl exec, but offers a --user flag to exec as root (or any other user)
+  - 'ssh' is a misnomer (it works by mounting a docker socket as a volume), but it's easier to work with as a command.
+  - Kudos to mikelorant for thinking of the docker socket! :)
+  - Usage: kubectl ssh -u root zookeeper-1
+
+
 ### kubectl deploy [options]
 ![deploy](https://user-images.githubusercontent.com/22456127/36905632-d3f22eca-1e01-11e8-8d65-33dd556c8544.gif)
 
@@ -33,26 +41,18 @@ A collection of plugins for kubectl integration
 
   - View current namespace: kubectl switch
   - Switch namespace: kubectl switch preprod
-  - Switch cluster: kubectl switch cluster staging
+  - Switch cluster: kubectl switch cluster staging (cluster switching requires the user add their project name in the switch.sh file).
 
 ### kubectl verify
   - Non-interactive plugin that prompts users before executing a create/apply/deploy/delete command in a production namespace.
-  - If you do not want this, change your ~/.bash_profile and remove the part of the function mentioning it.
+  - If you do not want this, change your ~/.bash_profile and remove the first "case in" of the function mentioning it.
+
 
  ### kubectl get-node-ip
 ![get-node-ip](https://user-images.githubusercontent.com/22456127/36905626-d2652a9e-1e01-11e8-87a8-9942fd5b2307.gif)
   - Outputs the node location and IP for a given application e.g., kubectl get-nodes rabbitmq
   
   - Usage: kubectl get-node-ip (app or statefulset name...not the pod name)
-
-
- ### kubectl ssh
- ![ssh](https://user-images.githubusercontent.com/22456127/36905621-d0c89ff4-1e01-11e8-969e-6ad5e8767b92.gif)
-  - Like kubectl exec, but offers a --user flag to exec as root (or any other user) if you're running in GKE
-  
-  - Usage: kubectl ssh -p pod-name -u user
-  
-  -- *Requires that you have uploaded your ssh key to GCP or access will be denied! https://console.cloud.google.com/compute/metadata/sshKeys*
 
 
  ### kubectl uptime
