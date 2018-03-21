@@ -37,7 +37,7 @@ A collection of plugins for kubectl integration
 
 
  ### kubectl switch [options]
-![ssh](https://user-images.githubusercontent.com/22456127/37712867-84b950f6-2ceb-11e8-8959-289a6ff7a81e.gif)
+ ![ssh](https://user-images.githubusercontent.com/22456127/37712867-84b950f6-2ceb-11e8-8959-289a6ff7a81e.gif)
   - View current namespace: kubectl switch
   - Switch namespace: kubectl switch preprod
   - Switch cluster: kubectl switch cluster staging (cluster switching requires the user add their project name in the switch.sh file).
@@ -48,7 +48,7 @@ A collection of plugins for kubectl integration
 
 
  ### kubectl get-node-ip
-![get-node-ip](https://user-images.githubusercontent.com/22456127/36905626-d2652a9e-1e01-11e8-87a8-9942fd5b2307.gif)
+ ![get-node-ip](https://user-images.githubusercontent.com/22456127/36905626-d2652a9e-1e01-11e8-87a8-9942fd5b2307.gif)
   - Outputs the node location and IP for a given application e.g., kubectl get-nodes rabbitmq
   
   - Usage: kubectl get-node-ip (app or statefulset name...not the pod name)
