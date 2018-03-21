@@ -15,7 +15,7 @@ A collection of plugins for kubectl integration
   To remove, delete the ~/.kube/plugins folder and comment the entry (a one line kubectl function) in your bash_profile.
   
  ### kubectl ssh
- ![ssh](https://user-images.githubusercontent.com/22456127/36905621-d0c89ff4-1e01-11e8-969e-6ad5e8767b92.gif)
+ ![ssh](https://user-images.githubusercontent.com/22456127/37712530-90db197e-2cea-11e8-8e3a-ae871ce481aa.gif)
   - Like kubectl exec, but offers a --user flag to exec as root (or any other user)
   - 'ssh' is a misnomer (it works by mounting a docker socket as a volume), but it's easier to work with as a command.
   - Kudos to mikelorant for thinking of the docker socket! :)
@@ -37,8 +37,7 @@ A collection of plugins for kubectl integration
 
 
  ### kubectl switch [options]
-![switch](https://user-images.githubusercontent.com/22456127/36905617-cd540052-1e01-11e8-86a1-d0fc6cccf6a2.gif)
-
+![ssh](https://user-images.githubusercontent.com/22456127/37712867-84b950f6-2ceb-11e8-8959-289a6ff7a81e.gif)
   - View current namespace: kubectl switch
   - Switch namespace: kubectl switch preprod
   - Switch cluster: kubectl switch cluster staging (cluster switching requires the user add their project name in the switch.sh file).
