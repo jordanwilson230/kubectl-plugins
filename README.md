@@ -23,10 +23,7 @@ source ~/.bash_profile
 - 'ssh' is a misnomer (it works by mounting a docker socket as a volume), but it's easier to work with as a command.
 - Kudos to mikelorant for thinking of the docker socket! :)
 
-*Example:*
-```bash
-kubectl ssh -u root rabbitmq-2
-```
+*Example:* `bash kubectl ssh -u root rabbitmq-2`
 
 
 ### kubectl deploy [options]
@@ -34,25 +31,20 @@ kubectl ssh -u root rabbitmq-2
 
 Option | Required | Description | Example
 ------------- | ------------- | ------------- | -------------
-[-f, --file] | Y | File to deploy. | *`-f manifest.yml`*
-[-i, --image] | N | Docker image to use. Overwrites what's set in the manifest. If an image is passed without a tag, it executes a search against the configured registry and prompts the user with list of images to choose from. | *`-i cassandra:3.7`* or *`-i cassandra`*
-[-d, --dry] | N | Runs the command in dry-run mode. | *`-d true`*
-[-n, --namespace] | N | Namespace/Environment to deploy to (defaults to current ns). | *`-n staging`*
+[-f, --file] | y | File to deploy. | *`-f manifest.yml`*
+[-i, --image] | n | Docker image to use. Overwrites what's set in the manifest. If an image is passed without a tag, it executes a search against the configured registry and prompts the user with list of images to choose from. | *`-i cassandra:3.7`* or *`-i cassandra`*
+[-d, --dry] | n | Runs the command in dry-run mode. | *`-d true`*
+[-n, --namespace] | n | Namespace/Environment to deploy to (defaults to current ns). | *`-n staging`*
 
-*Combined Example:*
-```bash
-kubectl deploy -f cassandra.yml -i cassandra:3.7-r1 -n staging -d true
-```
+*Combined Example:* `kubectl deploy -f cassandra.yml -i cassandra:3.7-r1 -n staging -d true`
 
 
  ### kubectl switch [options]
- ![ssh](https://user-images.githubusercontent.com/22456127/37712867-84b950f6-2ceb-11e8-8959-289a6ff7a81e.gif)
-
+![ssh](https://user-images.githubusercontent.com/22456127/37712867-84b950f6-2ceb-11e8-8959-289a6ff7a81e.gif)
 - View current namespace: *`kubectl switch`*
 - Switch namespace: *`kubectl switch preprod`*
 - Switch cluster: *`kubectl switch cluster staging`*
   - Switching clusters requires the user add their project name in the switch.sh file.
-
 
 
 ### kubectl verify
@@ -65,15 +57,9 @@ kubectl deploy -f cassandra.yml -i cassandra:3.7-r1 -n staging -d true
 ![get-node-ip](https://user-images.githubusercontent.com/22456127/36905626-d2652a9e-1e01-11e8-87a8-9942fd5b2307.gif)
 - Outputs the node location and IP for a given deployment/statefulset
 
-Example:
-```bash
-kubectl get-node-ip cassandra
-```
+Example: `kubectl get-node-ip cassandra`
 
 ### kubectl uptime
 - Displays total uptime for pods/statefulsets in the user namespace.
 
-Example:
-```
-kubectl uptime
-```
+Example: `kubectl uptime`
