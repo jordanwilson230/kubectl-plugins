@@ -3,7 +3,7 @@
 A collection of plugins for kubectl integration
 
 ###### Note
-- You can run these plugins without having to use kubectl's "plugin" command at runtime. Just, *`kubectl ssh`*, or *`kubectl deploy`*, for example.
+- You can run these plugins without having to use kubectl's "plugin" command at runtime. Just, *"`kubectl ssh`"*, or *"`kubectl deploy`"*, for example.
 - Some plugins require jq ( brew/apt/yum install jq )
 - All coding was written to maintain compatibility across both BSD and GNU.
 - The *deploy* plugin contains some in-house customizations. You'll want to adjust accordingly if using it as a template for your own work.
@@ -23,7 +23,6 @@ source ~/.bash_profile
 - Kudos to mikelorant for thinking of the docker socket! :)
 
 *Example:*
-
 ```bash
 kubectl ssh -u root rabbitmq-2
 ```
@@ -67,16 +66,15 @@ kubectl deploy -f cassandra.yml -i cassandra:3.7-r1 -n staging -d true
 ![get-node-ip](https://user-images.githubusercontent.com/22456127/36905626-d2652a9e-1e01-11e8-87a8-9942fd5b2307.gif)
 - Outputs the node location and IP for a given deployment/statefulset
 
-*Example:*
+Example:
 ```bash
 kubectl get-node-ip cassandra
 ```
 
-
 ### kubectl uptime
 - Displays total uptime for pods/statefulsets in the user namespace.
 
-*Example:*
-```bash
+Example:
+```
 kubectl uptime
 ```
