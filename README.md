@@ -26,7 +26,7 @@ source ~/.bash_profile
 *Example:* `bash kubectl ssh -u root rabbitmq-2`
 
 
-### kubectl deploy [options]
+### kubectl deploy
 ![deploy](https://user-images.githubusercontent.com/22456127/36905632-d3f22eca-1e01-11e8-8d65-33dd556c8544.gif)
 
 Option | Required | Description | Example
@@ -39,7 +39,7 @@ Option | Required | Description | Example
 *Combined Example:* `kubectl deploy -f cassandra.yml -i cassandra:3.7-r1 -n staging -d true`
 
 
- ### kubectl switch [options]
+ ### kubectl switch
 ![ssh](https://user-images.githubusercontent.com/22456127/37712867-84b950f6-2ceb-11e8-8959-289a6ff7a81e.gif)
 - View current namespace: *`kubectl switch`*
 - Switch namespace: *`kubectl switch preprod`*
