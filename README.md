@@ -18,6 +18,7 @@ source ~/.bash_profile
 
 
  ### kubectl ssh
+![ssh](https://user-images.githubusercontent.com/22456127/37712530-90db197e-2cea-11e8-8e3a-ae871ce481aa.gif)
 - Like kubectl exec, but offers a --user flag to exec as root (or any other user)
 - 'ssh' is a misnomer (it works by mounting a docker socket as a volume), but it's easier to work with as a command.
 - Kudos to mikelorant for thinking of the docker socket! :)
@@ -26,8 +27,6 @@ source ~/.bash_profile
 ```bash
 kubectl ssh -u root rabbitmq-2
 ```
-![ssh](https://user-images.githubusercontent.com/22456127/37712530-90db197e-2cea-11e8-8e3a-ae871ce481aa.gif)
-
 
 
 ### kubectl deploy [options]
