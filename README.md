@@ -28,9 +28,7 @@ source ~/.bash_profile
 
 ### kubectl deploy
 ![deploy](https://user-images.githubusercontent.com/22456127/36905632-d3f22eca-1e01-11e8-8d65-33dd556c8544.gif)
-*The use-case for this plugin is for deploying manifests seamlessly amongst namespaces and having environment specific variation handled and applied auomatically at run time.
-
-It takes your current context and edits your yaml manifest (in memory only) according to the rules and vars defined for the targeted namespace. You will want to define those in the deploy.sh file. This process is performed automatically, and is sent to kubectl after parsing.*
+\* *This plugin takes your current context and edits your yaml manifest (in memory only) according to the rules and vars defined for the targeted namespace. You will want to define those in the deploy.sh file. This process is performed automatically, and is sent to kubectl after parsing.*
 
 Option | Required | Description | Example
 ------------- | ------------- | ------------- | -------------
