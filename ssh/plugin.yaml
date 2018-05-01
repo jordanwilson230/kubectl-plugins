@@ -5,7 +5,7 @@ longDesc: >
 example: "kubectl ssh rabbitmq-2"
 command: "./ssh.sh"
 flags:
-  - name: "user"
+  - name: "dockeruser"
     shorthand: "u"
     desc: "Username or UID. If omitted, will use root."
     defValue: "root"
