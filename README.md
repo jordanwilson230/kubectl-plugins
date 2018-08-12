@@ -3,7 +3,7 @@
 A collection of plugins for kubectl integration
 
 ###### Note
-- You can run these plugins without having to use kubectl's "plugin" command at runtime. Just, *"`kubectl ssh`"*, or *"`kubectl deploy`"*, for example.
+- You can run these plugins without having to use kubectl's "plugin" command at runtime. Just, *`kubectl ssh`*, or *`kubectl deploy`*, for example.
 - Some plugins require jq ( brew/apt/yum install jq )
 - All coding was written to maintain compatibility across both BSD and GNU.
 - The *deploy* plugin contains some in-house customizations. You'll want to adjust accordingly if using it as a template for your own work.
@@ -20,10 +20,15 @@ source ~/.bash_profile
  ### kubectl ssh
 ![ssh](https://user-images.githubusercontent.com/22456127/37712530-90db197e-2cea-11e8-8e3a-ae871ce481aa.gif)
 - Like kubectl exec, but offers a --user flag to exec as root (or any other user)
+- Defaults to *root* user if no `--user` is passed.
 - 'ssh' is a misnomer (it works by mounting a docker socket as a volume), but it's easier to work with as a command.
 - Kudos to mikelorant for thinking of the docker socket! :)
 
-*Example:* `bash kubectl ssh -u root rabbitmq-2`
+*Usage:* `kubectl ssh <pod name>`
+
+Option | Required | Description | Example
+------------- | ------------- | ------------- | -------------
+[-u, --user] | No | Specify user | *`kubectl ssh -u rabbitmq rabbitmq-2`*
 
 
 ### kubectl deploy
@@ -41,11 +46,13 @@ Option | Required | Description | Example
 
 
  ### kubectl switch
-![ssh](https://user-images.githubusercontent.com/22456127/37712867-84b950f6-2ceb-11e8-8959-289a6ff7a81e.gif)
+![switch](https://user-images.githubusercontent.com/22456127/43997826-a0ad479c-9db4-11e8-8a62-32a083df2cac.gif)
+
 - View current namespace: *`kubectl switch`*
-- Switch namespace: *`kubectl switch preprod`*
-- Switch cluster: *`kubectl switch cluster staging`*
+- Switch namespace: *`kubectl switch <namespace>`*
+- Switch cluster: *`kubectl switch cluster <cluster>`*
   - Switching clusters requires the user add their project name in the switch.sh file.
+  - Tweak the file to use other shortcuts as you wish.
 
 
 ### kubectl verify
