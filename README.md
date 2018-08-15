@@ -57,8 +57,7 @@ Option | Required | Description | Example
 
 ### kubectl verify
 - Non-interactive plugin that prompts users before executing a create/apply/deploy/delete command in a production namespace.
-  - If you do not want this, change your ~/.bash_profile and remove the first "case in" of the function mentioning it.
-
+  - If you do not want this, edit your ~/.bash_profile and remove ```command ~/.kube/plugins/verify/verify.sh "${@}" &&``` from the function (the function is put in your .bash_profile when the install script runs).
 
 
 ### kubectl get-node-ip
