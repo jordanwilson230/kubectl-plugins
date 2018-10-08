@@ -10,7 +10,7 @@ A collection of plugins for kubectl integration
 
 ## Install on Linux/Mac
 ### Kubectl version >= 1.12.0
-Switch to bramch https://github.com/jordanwilson230/kubectl-plugins/tree/support-v1.12.0
+Checkout the support-v1.12.0 branch
 Run the install script.
 
 ### Kubectl version < 1.12.0
