@@ -10,8 +10,7 @@ A collection of plugins for kubectl integration
 
 ## Install on Linux/Mac
 ### Kubectl version >= 1.12.0
-Checkout the support-v1.12.0 branch
-Run the install script.
+View the README on the support-v1.12.0 branch
 
 ### Kubectl version < 1.12.0
 ```bash
