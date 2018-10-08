@@ -9,6 +9,11 @@ A collection of plugins for kubectl integration
 - The *deploy* plugin contains some in-house customizations. You'll want to adjust accordingly if using it as a template for your own work.
 
 ## Install on Linux/Mac
+### Kubectl version >= 1.12.0
+Switch to bramch https://github.com/jordanwilson230/kubectl-plugins/tree/support-v1.12.0
+Run the install script.
+
+### Kubectl version < 1.12.0
 ```bash
 ./install-kubectl-plugins
 source ~/.bash_profile
