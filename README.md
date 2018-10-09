@@ -3,6 +3,7 @@
 A collection of plugins for kubectl integration
 
 ###### Note
+- Support and enhancements for the latest kubectl version v1.12.0 is available in the ```support-v1.12.0``` branch here: https://github.com/jordanwilson230/kubectl-plugins/tree/support-v1.12.0
 - You can run these plugins without having to use kubectl's "plugin" command at runtime. Just, *`kubectl ssh`*, or *`kubectl deploy`*, for example.
 - Some plugins require jq ( brew/apt/yum install jq )
 - All coding was written to maintain compatibility across both BSD and GNU.
