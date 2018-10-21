@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+
+RESTORE=$(echo -en '\033[0m')
+YELLOW=$(echo -en '\033[00;33m')
+
+function usage() {
+    LBLUE=$(echo -en '\033[01;34m')
+    RESTORE=$(echo -en '\033[0m')
+    echo -e "\n${LBLUE}Description:\n\t- This plugin intercepts kubectl commands and, \
+based on the arguments that were issued, will\n\t  trigger an alert prompt requiring \
+the user to acknowledge they are operating in an important namespace (i.e., production).\n\t \
+To add a namespace or cluster that will trigger the prompt, run the following:\n\t \
+- kubectl prompt add [-c cluster]/[-n namespace] NAME\n${RESTORE}"
+    exit 0
+}
+[ $# -eq 0 ] && usage
+
+while getopts ":c:n:" arg; do
+    case $arg in
+        c) # Add Cluster
+           CLUSTER="${OPTARG}"
+           ;;
+        n) # Add Namespace
+           NAMESPACE="${OPTARG}"
+           ;;
+        *)
+           usage
+           exit 1
+           ;;
+     esac
+done
+
+if [[ "$NAMESPACE" ]]; then
+    read -p "${YELLOW}* Add ${NAMESPACE} to prompt list [y/n]? ${RESTORE}" answer
+    [[ "$answer" != "y" ]] && exit 0
+    echo -e "\n${YELLOW}* Adding ${CLUSTER}${NAMESPACE} to \${KUBECTL_NAMESPACE_PROMPT} in ~/.bash_profile\n\t- The changes will be applied after starting a new terminal session or after running: source ~/.bash_profile ${RESTORE}"
+    KUBECTL_NAMESPACE_PROMPT="${KUBECTL_NAMESPACE_PROMPT[@]} ${NAMESPACE}"
+    ex '+g/KUBECTL_NAMESPACE_PROMPT=/d' -cwq ~/.bash_profile
+    echo "export KUBECTL_NAMESPACE_PROMPT=\"${KUBECTL_NAMESPACE_PROMPT}\"" >> ~/.bash_profile
+elif [[ "$CLUSTER" ]]; then
+    read -p "${YELLOW}* Add ${CLUSTER} to prompt list [y/n]? ${RESTORE}" answer
+    echo -e "\n${YELLOW}* Adding ${CLUSTER} to \${KUBECTL_CLUSTER_PROMPT} in ~/.bash_profile\n\t- The changes will be applied after starting a new terminal session or after running: source ~/.bash_profile ${RESTORE}"
+    KUBECTL_CLUSTER_PROMPT+="${CLUSTER/%/ }"
+    ex '+g/KUBECTL_CLUSTER_PROMPT=/d' -cwq ~/.bash_profile
+    echo "export KUBECTL_CLUSTER_PROMPT=\"${KUBECTL_CLUSTER_PROMPT}\"" >> ~/.bash_profile
+fi
+
+
+# Add function to check user context when kubectl is invoked.
+if [[ ! -z "$NAMESPACE" ]] || [[ ! -z "$CLUSTER" ]]; then
+    ex '+g/function kubectl/d' -cwq ~/.bash_profile
+    echo 'function kubectl() { kube=$(which kubectl); $kube prompt warning "${@}" && command $kube "${@}" ; }' >> ~/.bash_profile
+    exit 0
+fi

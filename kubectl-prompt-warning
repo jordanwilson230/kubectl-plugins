@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+RED=$(echo -en '\033[00;31m')
+RESTORE=$(echo -en '\033[0m')
+
+COMMAND="${@}"
+
+function prompt() {
+    clear; echo -e "\n${RED}You are operating in a flagged namespace or cluster. Proceed?${RESTORE}\n"
+    read -p "${RED}[yes/no]:${RESTORE} " answer
+    echo -e "\n\n"
+    [[ "$answer" != "yes" ]] && exit 1
+    exit 0
+#    command kubectl "${COMMAND}"
+}
+
+# Skip checks if user has not assigned any (using kubectl prompt add [-n namespace OR -c cluster]
+if [[ ! -z "$KUBECTL_NAMESPACE_PROMPT" ]] || [[ ! -z "$KUBECTL_CLUSTER_PROMPT" ]]; then
+    echo "$@" | grep "deploy\|create\|apply\|set \|delete\|scale " 1>/dev/null
+    if [ $? -eq 0 ]; then
+        NAMESPACE=$(kubectl config view --template='{{ range .contexts }}{{ if eq .name "'$(kubectl config current-context)'" }}{{ .context.namespace }}{{ end }}{{ end }}')
+        CLUSTER=$(kubectl config view --template='{{ range .contexts }}{{ if eq .name "'$(kubectl config current-context)'" }}{{ .context.cluster }}{{ end }}{{ end }}')
+        [[ "$KUBECTL_CLUSTER_PROMPT" =~ "$CLUSTER" ]] && prompt "$CLUSTER"
+        [[ "$KUBECTL_NAMESPACE_PROMPT" =~ "$NAMESPACE" ]] && prompt "$NAMESPACE"
+    fi
+fi
+
+#command kubectl "${@}"
