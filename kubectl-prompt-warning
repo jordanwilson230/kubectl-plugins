@@ -11,7 +11,6 @@ function prompt() {
     echo -e "\n\n"
     [[ "$answer" != "yes" ]] && exit 1
     exit 0
-#    command kubectl "${COMMAND}"
 }
 
 # Skip checks if user has not assigned any (using kubectl prompt add [-n namespace OR -c cluster]
@@ -25,4 +24,4 @@ if [[ ! -z "$KUBECTL_NAMESPACE_PROMPT" ]] || [[ ! -z "$KUBECTL_CLUSTER_PROMPT" ]
     fi
 fi
 
-#command kubectl "${@}"
+exit 0
