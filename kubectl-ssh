@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+
+trap 'kubectl delete pod $container >/dev/null 2>&1 &' 0 1 2 3 15
+
+usage() { echo -e "Usage: kubectl ssh <options> <pod name>" && grep " .)\ #" $0; exit 0; }
+[ $# -eq 0 ] && usage
+
+while getopts ":u:c:p:h" arg; do
+ case $arg in
+   p) # Specify pod name.
+     POD=${OPTARG}
+     ;;
+   u) # Specify user
+     USERNAME=${OPTARG}
+     ;;
+   c) # Specify container
+     CONTAINER=${OPTARG}
+     ;;
+   h) # Display help.
+     usage
+     exit 0
+     ;;
+   -- ) # Optional command to execute. Defaults to /bin/sh
+     ;;
+   *)
+     ;;
+ esac
+done
+
+COMMAND=$(echo $@ | grep '\-\-' | sed 's|\(.*\) -- \(.*\)|\2|g')
+COMMAND="${COMMAND:-/bin/sh}"
+
+if [ -z "$POD" ] && [ -z "$CONTAINER" ] && [ -z "$USERNAME" ]; then
+   POD="$1"
+fi
+
+USERNAME="${USERNAME:-root}"
+
+[ -z $POD ] && echo -e "\nMissing Pod Name" && exit 1
+
+echo -e "\nConnecting...\nPod: ${POD}\nUser: ${USERNAME}\nContainer:$CONTAINER\nCommand:$COMMAND\n"
+
+KUBECTL=$(which kubectl)
+NAMESPACE=$(kubectl config view --template='{{ range .contexts }}{{ if eq .name "'$(kubectl config current-context)'" }}{{ .context.namespace }}{{ end }}{{ end }}')
+
+# Limits concurrent ssh sessions (each session deploys a pod) to 2.
+test "$(exec kubectl get po ssh 2>/dev/null)" && container='ssh-1' || container='ssh-0'
+
+NODENAME=$( ${KUBECTL} --namespace ${NAMESPACE} get pod ${POD} -o go-template='{{.spec.nodeName}}' )
+
+# Adds toleration if the target container runs on a tainted node. Assumes no more than one taint. Change if yours have more than one or are configured differently.
+TOLERATION_VALUE=$($KUBECTL --namespace ${NAMESPACE} get pod ${POD} -ojsonpath='{.spec.tolerations[].value}') >/dev/null 2>&1
+if [[ "$TOLERATION_VALUE" ]]; then
+    TOLERATION_KEY=$($KUBECTL --namespace ${NAMESPACE} get pod ${POD} -ojsonpath='{.spec.tolerations[].key}')
+    TOLERATION_OPERATOR=$($KUBECTL --namespace ${NAMESPACE} get pod ${POD} -ojsonpath='{.spec.tolerations[].operator}')
+    TOLERATION_EFFECT=$($KUBECTL --namespace ${NAMESPACE} get pod ${POD} -ojsonpath='{.spec.tolerations[].effect}')
+    TOLERATIONS='"tolerations": [{"effect": "'$TOLERATION_EFFECT'","key": "'$TOLERATION_KEY'","operator": "'$TOLERATION_OPERATOR'","value": "'$TOLERATION_VALUE'"}],'
+    NODESELECTOR='"nodeSelector": {"kubernetes.io/hostname": "'$NODENAME'"},'
+else
+    TOLERATIONS=''
+    NODESELECTOR='"nodeSelector": {"kubernetes.io/hostname": "'$NODENAME'"},'
+fi
+
+
+if [[ -n ${CONTAINER} ]]; then
+  DOCKER_CONTAINERID=$( eval $KUBECTL --namespace ${NAMESPACE} get pod ${POD} -o go-template="'{{ range .status.containerStatuses }}{{ if eq .name \"${CONTAINER}\" }}{{ .containerID }}{{ end }}{{ end }}'" )
+else
+  DOCKER_CONTAINERID=$( $KUBECTL --namespace ${NAMESPACE} get pod ${POD} -o go-template='{{ (index .status.containerStatuses 0).containerID }}' )
+fi
+CONTAINERID=${DOCKER_CONTAINERID#*//}
+
+read -r -d '' OVERRIDES <<EOF
+{
+    "apiVersion": "v1",
+    "spec": {
+        "containers": [
+            {
+                "image": "docker",
+                "name": "'$container'",
+                "stdin": true,
+                "stdinOnce": true,
+                "tty": true,
+                "restartPolicy": "Never",
+                "args": [
+                  "exec",
+                  "-it",
+                  "-u",
+                  "${USERNAME}",
+                  "${CONTAINERID}",
+                  "${COMMAND}"
+                ],
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/docker.sock",
+                        "name": "docker"
+                    }
+                ]
+            }
+        ],
+
+        $NODESELECTOR
+
+        $TOLERATIONS
+
+        "volumes": [
+            {
+                "name": "docker",
+                "hostPath": {
+                    "path": "/var/run/docker.sock",
+                    "type": "File"
+                }
+            }
+        ]
+    }
+}
+EOF
+
+eval kubectl run -it --restart=Never --image=docker --overrides="'${OVERRIDES}'" $container

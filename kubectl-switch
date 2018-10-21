@@ -48,7 +48,7 @@ function switch_cluster() {
             RED=$(echo -en '\033[00;31m')
             YELLOW=$(echo -en '\033[00;33m')
             RESTORE=$(echo -en '\033[0m')
-            echo -e "\n${RED}Error on lookup. Cannot find:${YELLOW} $CLUSTER${RESTORE}\n"
+            echo -e "\n${RED}Error on lookup. Cannot find:${YELLOW} $CLUSTER${RESTORE}"
             exit 1
         fi
     fi

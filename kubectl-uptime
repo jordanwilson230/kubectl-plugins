@@ -22,7 +22,7 @@ class Numeric
   end
 end
 
-namespace = ENV['KUBECTL_PLUGINS_CURRENT_NAMESPACE'] || 'default'
+namespace = `kubectl config view --template='{{ range .contexts }}{{ if eq .name "'$(kubectl config current-context)'" }}{{ .context.namespace }}{{ end }}{{ end }}'`
 pods_json = `kubectl --namespace #{namespace} get pods -o json`
 pods_parsed = JSON.parse(pods_json)
 

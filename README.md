@@ -1,77 +1,67 @@
 
 # kubectl-plugins
-A collection of plugins for kubectl integration
+A collection of plugins for kubectl integration (for Kubectl versions >= 1.12.0)
 
 ###### Note
-- Support and enhancements for the latest kubectl version v1.12.0 is available in the ```support-v1.12.0``` branch here: https://github.com/jordanwilson230/kubectl-plugins/tree/support-v1.12.0
-- You can run these plugins without having to use kubectl's "plugin" command at runtime. Just, *`kubectl ssh`*, or *`kubectl deploy`*, for example.
+- These plugins are for kubectl versions at or above 1.12.0 only. Check your version via ```kubectl version```
+- For versions below 1.12.0, use the 1.11.0 branch.
+- To upgrade your kubectl version via homebrew: ```brew upgrade kubectl```, or via gcloud: ```gcloud components update```
 - Some plugins require jq ( brew/apt/yum install jq )
 - All coding was written to maintain compatibility across both BSD and GNU.
-- The *deploy* plugin contains some in-house customizations. You'll want to adjust accordingly if using it as a template for your own work.
 
 ## Install on Linux/Mac
-### Kubectl version >= 1.12.0
-View the README on the support-v1.12.0 branch
-
-### Kubectl version < 1.12.0
 ```bash
+git clone https://github.com/jordanwilson230/kubectl-plugins.git
+cd kubectl-plugins
 ./install-kubectl-plugins
 source ~/.bash_profile
 ```
-*To remove, delete the ~/.kube/plugins folder and comment the entry (a one line kubectl function) in your bash_profile.*
+#### To Uninstall
+```
+rm -rf ~/.kube/plugins/jordanwilson230
+ex '+g/jordanwilson230/d' -cwq ~/.bash_profile
+```
 
 
-
- ### kubectl ssh
-![ssh](https://user-images.githubusercontent.com/22456127/37712530-90db197e-2cea-11e8-8e3a-ae871ce481aa.gif)
+### kubectl ssh
+![kapssh](https://user-images.githubusercontent.com/22456127/46683069-4152c100-cbbd-11e8-9db5-9fb319bb320b.gif)
 - Like kubectl exec, but offers a --user flag to exec as root (or any other user)
-- Defaults to *root* user if no `--user` is passed.
 - 'ssh' is a misnomer (it works by mounting a docker socket as a volume), but it's easier to work with as a command.
 - Kudos to mikelorant for thinking of the docker socket! :)
 
-*Usage:* `kubectl ssh <pod name>`
-
 Option | Required | Description | Example
 ------------- | ------------- | ------------- | -------------
-[-u, --user] | No | Specify user | *`kubectl ssh -u rabbitmq rabbitmq-2`*
+[-p] | y | Pod name. The `-p` flag can be omitted if no other flags are passed (i.e., `kubectl ssh kafka-0`)| *`kubectl -p kafka-0`*
+[-u] | n | User to exec as. Defaults to root | *`kubectl ssh -u kafka -p kafka-0`*
+[-c] | n | Specify container within pod | *`kubectl ssh -c burrow-metrics -p kafka-0`*
+[ -- ]| n | Command to execute. Defaults to /bin/sh | *`kubectl ssh kafka -- ls /etc/burrow`*
+[-h] | n | Show usage | *`kubectl ssh -h`*
 
 
-### kubectl deploy
-![deploy](https://user-images.githubusercontent.com/22456127/36905632-d3f22eca-1e01-11e8-8d65-33dd556c8544.gif)
-\* *This plugin takes your current context and edits your yaml manifest (in memory only) according to the rules and vars defined for the targeted namespace. You will want to define those in the deploy.sh file. This process is performed automatically, and is sent to kubectl after parsing.*
-
-Option | Required | Description | Example
-------------- | ------------- | ------------- | -------------
-[-f, --file] | y | File to deploy. | *`-f manifest.yml`*
-[-i, --image] | n | Docker image to use. Overwrites what's set in the manifest. If an image is passed without a tag, it executes a search against the configured registry and prompts the user with list of images to choose from. | *`-i cassandra:3.7`* or *`-i cassandra`*
-[-d, --dry] | n | Runs the command in dry-run mode. | *`-d true`*
-[-n, --namespace] | n | Namespace/Environment to deploy to (defaults to current ns). | *`-n staging`*
-
-*Combined Example:* `kubectl deploy -f cassandra.yml -i cassandra:3.7-r1 -n staging -d true`
-
-
- ### kubectl switch
-![switch](https://user-images.githubusercontent.com/22456127/43997826-a0ad479c-9db4-11e8-8a62-32a083df2cac.gif)
-
+### kubectl switch
+![newkap](https://user-images.githubusercontent.com/22456127/46681715-d489f780-cbb9-11e8-81f1-22b24b27ff9c.gif)
 - View current namespace: *`kubectl switch`*
-- Switch namespace: *`kubectl switch <namespace>`*
-- Switch cluster: *`kubectl switch cluster <cluster>`*
-  - Switching clusters requires the user add their project name in the switch.sh file.
-  - Tweak the file to use other shortcuts as you wish.
+- Switch namespace: *`kubectl switch preprod`*
+- Switch cluster: *`kubectl switch cluster staging`*
+- List and select from all available clusters: *`kubeclt switch cluster -l`*
+
+Option | Required | Description | Example
+------------- | ------------- | ------------- | -------------
+[-l] | n | List available clusters and prompts for selection. Can only be used when ```cluster``` is passed. | *`kubectl switch cluster -l`*
+[-h] | n | Show usage | *`kubectl switch -h`*
 
 
-### kubectl verify
-- Non-interactive plugin that prompts users before executing a create/apply/deploy/delete command in a production namespace.
-  - If you do not want this, edit your ~/.bash_profile and remove ```command ~/.kube/plugins/verify/verify.sh "${@}" &&``` from the function (the function is put in your .bash_profile when the install script runs).
+
+### kubectl ip
+![kap_ip](https://user-images.githubusercontent.com/22456127/46684546-1c604d00-cbc1-11e8-8b8f-9e2684e42121.gif)
+- Outputs the node name, node IP, and Pod IP for a given resource. Search is performed against common labels (defaults to app, name, component)
+
+Example: `kubectl ip cassandra`
 
 
-### kubectl get-node-ip
-![get-node-ip](https://user-images.githubusercontent.com/22456127/36905626-d2652a9e-1e01-11e8-87a8-9942fd5b2307.gif)
-- Outputs the node location and IP for a given deployment/statefulset
-
-Example: `kubectl get-node-ip cassandra`
 
 ### kubectl uptime
-- Displays total uptime for pods/statefulsets in the user namespace.
+![kap_uptime](https://user-images.githubusercontent.com/22456127/46684550-22eec480-cbc1-11e8-8770-9a61c28179f4.gif)
+- Displays total uptime for pods/statefulsets in the current namespace.
 
 Example: `kubectl uptime`
