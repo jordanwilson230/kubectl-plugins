@@ -65,3 +65,14 @@ Example: `kubectl ip cassandra`
 - Displays total uptime for pods/statefulsets in the current namespace.
 
 Example: `kubectl uptime`
+
+
+### kubectl prompt
+- Displays a warning prompt when issuing commands in a flagged cluster or namespace
+- Commands that trigger the prompt include ```create, scale, delete, apply, etc.,```
+- Flag a namespace: ```kubectl prompt add -n production```
+- Flag a cluster: ```kubectl prompt add -c my-cluster```
+- List flagged environments: ```kubectl prompt list```
+- Clear flagged environments: ```kubectl prompt remove```
+- See description: ```kubectl prompt```
+- GIF coming soon!
