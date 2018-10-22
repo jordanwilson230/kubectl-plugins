@@ -13,12 +13,13 @@ A collection of plugins for kubectl integration (for Kubectl versions >= 1.12.0)
 ```bash
 git clone https://github.com/jordanwilson230/kubectl-plugins.git
 cd kubectl-plugins
-./install-kubectl-plugins
+./install-kubectl-plugins.sh
 source ~/.bash_profile
 ```
 #### To Uninstall
 ```
 rm -rf ~/.kube/plugins/jordanwilson230
+ex '+g/function kubectl()/d' -cwq ~/.bash_profile
 ex '+g/jordanwilson230/d' -cwq ~/.bash_profile
 ```
 
@@ -39,7 +40,7 @@ Option | Required | Description | Example
 
 
 ### kubectl switch
-![newkap](https://user-images.githubusercontent.com/22456127/46681715-d489f780-cbb9-11e8-81f1-22b24b27ff9c.gif)
+![switch](https://user-images.githubusercontent.com/22456127/47271118-50cdf480-d543-11e8-8e27-84d8909548b6.gif)
 - View current namespace: *`kubectl switch`*
 - Switch namespace: *`kubectl switch preprod`*
 - Switch cluster: *`kubectl switch cluster staging`*
@@ -50,6 +51,16 @@ Option | Required | Description | Example
 [-l] | n | List available clusters and prompts for selection. Can only be used when ```cluster``` is passed. | *`kubectl switch cluster -l`*
 [-h] | n | Show usage | *`kubectl switch -h`*
 
+
+### kubectl prompt
+![prompt](https://user-images.githubusercontent.com/22456127/47271066-91793e00-d542-11e8-9a97-71f2457aef51.gif)
+- Displays a warning prompt when issuing commands in a flagged cluster or namespace
+- Commands that trigger the prompt include ```create, scale, delete, apply, etc.,```
+- Flag a namespace: ```kubectl prompt add -n production```
+- Flag a cluster: ```kubectl prompt add -c my-cluster```
+- List flagged environments: ```kubectl prompt list```
+- Clear flagged environments: ```kubectl prompt remove```
+- View description: ```kubectl prompt```
 
 
 ### kubectl ip
@@ -65,14 +76,3 @@ Example: `kubectl ip cassandra`
 - Displays total uptime for pods/statefulsets in the current namespace.
 
 Example: `kubectl uptime`
-
-
-### kubectl prompt
-- Displays a warning prompt when issuing commands in a flagged cluster or namespace
-- Commands that trigger the prompt include ```create, scale, delete, apply, etc.,```
-- Flag a namespace: ```kubectl prompt add -n production```
-- Flag a cluster: ```kubectl prompt add -c my-cluster```
-- List flagged environments: ```kubectl prompt list```
-- Clear flagged environments: ```kubectl prompt remove```
-- See description: ```kubectl prompt```
-- GIF coming soon!
