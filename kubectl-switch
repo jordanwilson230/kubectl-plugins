@@ -11,7 +11,7 @@ trap 'CURRENT_CONTEXT=$(kubectl config current-context) && echo && kubectl confi
 
 # Usage
 usage() { echo -e "# Usage\n\tPrompt for Clusters: kubectl switch cluster -l\n\tSwitch Namespace: kubectl switch <namespace>\n\tSwitch Cluster: kubectl switch cluster <cluster_name>\n" && exit 0; }
-[[ "$@" =~ '-h' ]] || [ $# -eq 0 ] && usage
+[ $# -eq 0 ] && usage
 
 NAMESPACE="$1"
 CLUSTER="$2"
@@ -42,17 +42,15 @@ function switch_cluster() {
   # Fallback in case the user has renamed their context for the cluster.
     if [ -z "${CLUSTER_NAME}" ]; then
         CLUSTER_NAME=$(kubectl config get-contexts -o name | grep $CLUSTER)
-
       # If both lookups have failed, exit 1.
         if [ -z "${CLUSTER_NAME}" ]; then
             RED=$(echo -en '\033[00;31m')
             YELLOW=$(echo -en '\033[00;33m')
             RESTORE=$(echo -en '\033[0m')
-            echo -e "\n${RED}Error on lookup. Cannot find:${YELLOW} $CLUSTER${RESTORE}"
+            echo -e "\n${RED}Error on lookup. Cannot find:${YELLOW} $CLUSTER${RESTORE}\n"
             exit 1
         fi
     fi
-
     CLUSTER="$CLUSTER_NAME"
     kubectl config use-context $CLUSTER >/dev/null 2>&1
     if [ $? -ne 0 ]; then
