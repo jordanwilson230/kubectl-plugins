@@ -42,6 +42,9 @@ echo -e "\nConnecting...\nPod: ${POD}\nUser: ${USERNAME}\nContainer:$CONTAINER\n
 
 KUBECTL=$(which kubectl)
 NAMESPACE=$(kubectl config view --template='{{ range .contexts }}{{ if eq .name "'$(kubectl config current-context)'" }}{{ .context.namespace }}{{ end }}{{ end }}')
+if [ "$NAMESPACE" == "<no value>" ]; then
+  NAMESPACE=default
+fi
 
 # Limits concurrent ssh sessions (each session deploys a pod) to 2.
 test "$(exec kubectl get po "$(whoami)-1" 2>/dev/null)" && container="$(whoami)-2" || container="$(whoami)-1"
