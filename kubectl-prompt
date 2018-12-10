@@ -6,8 +6,10 @@ RESTORE=$(echo -en '\033[0m')
 echo -e "\n${LBLUE}Description:\n\n - This plugin intercepts kubectl commands and, \
 based on the arguments that were issued, will\n     trigger an alert prompt requiring \
 the user to acknowledge they are operating in an important namespace (i.e., production).\n \
-\n - To add a namespace or cluster that will trigger the prompt, run the following:\n \
-    kubectl prompt add [-c cluster]/[-n namespace] NAME\n \
+\n - To add a namespace that will trigger the prompt, run the following:\n \
+    kubectl prompt add [-n namespace] MY_NAMESPACE\n \
+\n - To add a cluster that will trigger the prompt, run the following:\n \
+    kubectl prompt add [-c cluster] MY_CLUSTER\n \
 \n - To list your flagged environments, run:\n \
     kubectl prompt list\n \
 \n - To clear your flagged environments, run:\n \
