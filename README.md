@@ -32,7 +32,7 @@ ex '+g/jordanwilson230/d' -cwq ~/.bash_profile
 Option | Required | Description | Example
 ------------- | ------------- | ------------- | -------------
 -h | N | Show usage | *`kubectl ssh -h`*
--p | N | Pod name. The `-p` flag can be omitted if no other flags are passed (i.e., `kubectl ssh kafka-0`)| *`kubectl -p kafka-0`*
+-p | Y | Pod name. The `-p` flag can be omitted if no other flags are passed (i.e., `kubectl ssh kafka-0`)| *`kubectl -p kafka-0`*
 -u | N | User to exec as. Defaults to root | *`kubectl ssh -u kafka -p kafka-0`*
 -c | N | Specify container within pod | *`kubectl ssh -c burrow-metrics -p kafka-0`*
 -- | N | Pass an optional command. Defaults to /bin/sh | *`kubectl ssh kafka -- ls /etc/burrow`*
