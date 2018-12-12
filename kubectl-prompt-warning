@@ -6,7 +6,7 @@ RESTORE=$(echo -en '\033[0m')
 COMMAND="${@}"
 
 function prompt() {
-    clear; echo -e "\n${RED}You are operating in a flagged namespace or cluster. Proceed?${RESTORE}\n"
+    clear; echo -e "\n${RED}You are operating in a flagged environment: ${NAMESPACE}${CLUSTER}. Proceed?${RESTORE}\n"
     read -p "${RED}[yes/no]:${RESTORE} " answer
     echo -e "\n\n"
     [[ "$answer" != "yes" ]] && exit 1
@@ -19,8 +19,13 @@ if [[ ! -z "$KUBECTL_NAMESPACE_PROMPT" ]] || [[ ! -z "$KUBECTL_CLUSTER_PROMPT" ]
     if [ $? -eq 0 ]; then
         NAMESPACE=$(kubectl config view --template='{{ range .contexts }}{{ if eq .name "'$(kubectl config current-context)'" }}{{ .context.namespace }}{{ end }}{{ end }}')
         CLUSTER=$(kubectl config view --template='{{ range .contexts }}{{ if eq .name "'$(kubectl config current-context)'" }}{{ .context.cluster }}{{ end }}{{ end }}')
-        [[ "$KUBECTL_CLUSTER_PROMPT" =~ "$CLUSTER" ]] && prompt "$CLUSTER"
-        [[ "$KUBECTL_NAMESPACE_PROMPT" =~ "$NAMESPACE" ]] && prompt "$NAMESPACE"
+        if [[ "$KUBECTL_NAMESPACE_PROMPT" =~ "$NAMESPACE" ]]; then
+            CLUSTER=''
+            prompt "$NAMESPACE"
+        elif [[ "$KUBECTL_CLUSTER_PROMPT" =~ "$CLUSTER" ]]; then
+            NAMESPACE=''
+            prompt "$CLUSTER"
+        fi
     fi
 fi
 
