@@ -43,10 +43,12 @@ echo -e "\nConnecting...\nPod: ${POD}\nUser: ${USERNAME}\nContainer:$CONTAINER\n
 KUBECTL=$(which kubectl)
 NAMESPACE=$(kubectl config view --template='{{ range .contexts }}{{ if eq .name "'$(kubectl config current-context)'" }}{{ .context.namespace }}{{ end }}{{ end }}')
 
-# Limits concurrent ssh sessions (each session deploys a pod) to 2.
+# Limits concurrent ssh sessions (each session deploys a pod) to 2. It's not necessary, just a preference.
 test "$(exec kubectl get po "$(whoami)-1" 2>/dev/null)" && container="$(whoami)-2" || container="$(whoami)-1"
 
+# We want to mount the docker socket on the node of the pod we're exec'ing into.
 NODENAME=$( ${KUBECTL} --namespace ${NAMESPACE} get pod ${POD} -o go-template='{{.spec.nodeName}}' )
+NODESELECTOR='"nodeSelector": {"kubernetes.io/hostname": "'$NODENAME'"},'
 
 # Adds toleration if the target container runs on a tainted node. Assumes no more than one taint. Change if yours have more than one or are configured differently.
 TOLERATION_VALUE=$($KUBECTL --namespace ${NAMESPACE} get pod ${POD} -ojsonpath='{.spec.tolerations[].value}') >/dev/null 2>&1
@@ -55,12 +57,9 @@ if [[ "$TOLERATION_VALUE" ]]; then
     TOLERATION_OPERATOR=$($KUBECTL --namespace ${NAMESPACE} get pod ${POD} -ojsonpath='{.spec.tolerations[].operator}')
     TOLERATION_EFFECT=$($KUBECTL --namespace ${NAMESPACE} get pod ${POD} -ojsonpath='{.spec.tolerations[].effect}')
     TOLERATIONS='"tolerations": [{"effect": "'$TOLERATION_EFFECT'","key": "'$TOLERATION_KEY'","operator": "'$TOLERATION_OPERATOR'","value": "'$TOLERATION_VALUE'"}],'
-    NODESELECTOR='"nodeSelector": {"kubernetes.io/hostname": "'$NODENAME'"},'
 else
     TOLERATIONS=''
-    NODESELECTOR='"nodeSelector": {"kubernetes.io/hostname": "'$NODENAME'"},'
 fi
-
 
 if [[ -n ${CONTAINER} ]]; then
   DOCKER_CONTAINERID=$( eval $KUBECTL --namespace ${NAMESPACE} get pod ${POD} -o go-template="'{{ range .status.containerStatuses }}{{ if eq .name \"${CONTAINER}\" }}{{ .containerID }}{{ end }}{{ end }}'" )
