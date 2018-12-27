@@ -3,7 +3,7 @@
 A collection of plugins for kubectl integration
 
 ###### Note
-- Support and enhancements for the latest kubectl version v1.12.0 is available in the ```master``` branch, and can be considered stable.
+- The code in this branch supports only earlier versions of kubectl (1.11.x and below).  Plugins for the latest kubectl version v1.12.x is available in the ```master``` branch, and can be considered stable.
 - You can run these plugins without having to use kubectl's "plugin" command at runtime. Just, *`kubectl ssh`*, or *`kubectl deploy`*, for example.
 - Some plugins require jq ( brew/apt/yum install jq )
 - All coding was written to maintain compatibility across both BSD and GNU.
