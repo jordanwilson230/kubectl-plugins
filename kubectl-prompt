@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-
+RED=$(echo -en '\033[00;31m')
 LBLUE=$(echo -en '\033[01;34m')
 YELLOW=$(echo -en '\033[00;33m')
 RESTORE=$(echo -en '\033[0m')
@@ -70,7 +70,7 @@ function add_prompt() {
     # Add function to check user context when kubectl is invoked.
     if [[ ! -z "$NAMESPACE" ]] || [[ ! -z "$CLUSTER" ]]; then
         ex '+g/function kubectl/d' -cwq ~/.bash_profile
-        echo 'function kubectl() { kube=$(which kubectl); $kube prompt warning "${@}" && command $kube "${@}" ; }' >> ~/.bash_profile
+        echo 'function kubectl() { kube=$(which kubectl); $kube prompt "${@}" && command $kube "${@}" ; }' >> ~/.bash_profile
         exit 0
     fi
 }
@@ -97,8 +97,8 @@ function list_prompt() {
 
 ### Prompt user if running in a flagged envirinment
 function prompt() {
-    clear; echo -e "\n${RED}You are operating in a flagged environment: ${NAMESPACE}${CLUSTER}.\n[Command:] ${COMMAND}\nProceed?${RESTORE}\n"
-    read -p "${RED}[yes/no]:${RESTORE} " answer
+    clear; echo -e "\n${RED}You are operating in a flagged environment: ${RESTORE}${NAMESPACE}${CLUSTER}${RED}\nCommand: ${COMMAND}\n"
+    read -p "Proceed [yes/no]? ${RESTORE} " answer
     echo -e "\n\n"
     [[ "$answer" != "yes" ]] && exit 1
     exit 0
