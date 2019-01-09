@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-
-ex '+g/KUBECTL_NAMESPACE_PROMPT=/d' -cwq ~/.bash_profile
-ex '+g/KUBECTL_CLUSTER_PROMPT=/d' -cwq ~/.bash_profile
-ex '+g/function kubectl/d' -cwq ~/.bash_profile
-echo -e "\nCleared prompt list.\nPlease open a new terminal for it to take affect.\n"
-exit 0

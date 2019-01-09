@@ -2,29 +2,29 @@
 
 trap 'kubectl delete pod $container >/dev/null 2>&1 &' 0 1 2 3 15
 
-usage() { echo -e "Usage: kubectl ssh <options> <pod name>" && grep " .)\ #" $0; exit 0; }
+usage() { echo -e "Usage: kubectl connect -u <user> -p <pod name>" && grep " .)\ #" $0 | sed 's|^    |-|g'; exit 0; }
 [ $# -eq 0 ] && usage
 
 while getopts ":u:c:p:h" arg; do
- case $arg in
-   p) # Specify pod name.
-     POD=${OPTARG}
-     ;;
-   u) # Specify user
-     USERNAME=${OPTARG}
-     ;;
-   c) # Specify container
-     CONTAINER=${OPTARG}
-     ;;
-   h) # Display help.
-     usage
-     exit 0
-     ;;
-   -- ) # Optional command to execute. Defaults to /bin/sh
-     ;;
-   *)
-     ;;
- esac
+  case $arg in
+    p) # Specify pod name.
+      POD=${OPTARG}
+      ;;
+    u) # Specify user
+      USERNAME=${OPTARG}
+      ;;
+    c) # Specify container
+      CONTAINER=${OPTARG}
+      ;;
+    h) # Display help.
+      usage
+      exit 0
+      ;;
+    -) # Optional separator for a command to execute. Defaults to /bin/sh
+      ;;
+    *)
+      ;;
+  esac
 done
 
 COMMAND=$(echo $@ | grep '\-\-' | sed 's|\(.*\) -- \(.*\)|\2|g')
@@ -43,7 +43,7 @@ echo -e "\nConnecting...\nPod: ${POD}\nUser: ${USERNAME}\nContainer:$CONTAINER\n
 KUBECTL=$(which kubectl)
 NAMESPACE=$(kubectl config view --template='{{ range .contexts }}{{ if eq .name "'$(kubectl config current-context)'" }}{{ .context.namespace }}{{ end }}{{ end }}')
 
-# Limits concurrent ssh sessions (each session deploys a pod) to 2. It's not necessary, just a preference.
+# Limits concurrent sessions (each session deploys a pod) to 2. It's not necessary, just a preference.
 test "$(exec kubectl get po "$(whoami)-1" 2>/dev/null)" && container="$(whoami)-2" || container="$(whoami)-1"
 
 # We want to mount the docker socket on the node of the pod we're exec'ing into.
