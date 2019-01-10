@@ -97,8 +97,11 @@ function list_prompt() {
 
 ### Prompt user if running in a flagged envirinment
 function prompt() {
-    clear; echo -e "\n${RED}You are operating in a flagged environment: ${RESTORE}${NAMESPACE}${CLUSTER}${RED}\nCommand: ${COMMAND}\n"
-    read -p "Proceed [yes/no]? ${RESTORE} " answer
+    clear; echo -e "${RED}#################################################################################
+\t*** You are operating in a flagged environment: ${NAMESPACE}${CLUSTER} ***
+#################################################################################${RESTORE}\n
+${YELLOW}Command: ${COMMAND}\n${RESTORE}"
+    read -p "${RED}Proceed [yes/no]?${RESTORE} " answer
     echo -e "\n\n"
     [[ "$answer" != "yes" ]] && exit 1
     exit 0

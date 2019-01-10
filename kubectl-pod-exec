@@ -2,7 +2,7 @@
 
 trap 'kubectl delete pod $container >/dev/null 2>&1 &' 0 1 2 3 15
 
-usage() { echo -e "Usage: kubectl connect -u <user> -p <pod name>" && grep " .)\ #" $0 | sed 's|^    |-|g'; exit 0; }
+usage() { echo -e "Usage: kubectl pod-exec -u <user> -p <pod name>" && grep " .)\ #" $0 | sed 's|^    |-|g'; exit 0; }
 [ $# -eq 0 ] && usage
 
 while getopts ":u:c:p:h" arg; do
