@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-RESTORE=$(echo -en '\033[0m')
-YELLOW=$(echo -en '\033[00;33m')
-
-# Lists Environments That Trigger the Warning Prompt
-echo -e "\n${YELLOW}CLUSTERS: ${KUBECTL_CLUSTER_PROMPT}\nNAMESPACES: ${KUBECTL_NAMESPACE_PROMPT}${RESTORE}\n"
-exit 0
-

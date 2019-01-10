@@ -1,18 +1,134 @@
 #!/usr/bin/env bash
 
+RED=$(echo -en '\033[00;31m')
 LBLUE=$(echo -en '\033[01;34m')
+YELLOW=$(echo -en '\033[00;33m')
 RESTORE=$(echo -en '\033[0m')
 
-echo -e "\n${LBLUE}Description:\n\n - This plugin intercepts kubectl commands and, \
-based on the arguments that were issued, will\n     trigger an alert prompt requiring \
-the user to acknowledge they are operating in an important namespace (i.e., production).\n \
-\n - To add a namespace that will trigger the prompt, run the following:\n \
-    kubectl prompt add [-n namespace] MY_NAMESPACE\n \
-\n - To add a cluster that will trigger the prompt, run the following:\n \
-    kubectl prompt add [-c cluster] MY_CLUSTER\n \
-\n - To list your flagged environments, run:\n \
-    kubectl prompt list\n \
-\n - To clear your flagged environments, run:\n \
-    kubectl prompt remove${RESTORE}\n"
 
-exit 0
+COMMAND="${@}"
+export COMMAND="$COMMAND"
+
+### Description and usage
+function description() {
+    echo -e "\n${LBLUE}Description:\n   This plugin intercepts kubectl commands and, based on the arguments issued, \
+will trigger an alert prompt\n   requiring the user to acknowledge they are operating in an important namespace (i.e., production).\n
+    \n - To add a namespace that will trigger the prompt, run the following:\n\tkubectl prompt add [-n namespace] MY_NAMESPACE
+    \n - To add a cluster that will trigger the prompt, run the following:\n\tkubectl prompt add [-c cluster] MY_CLUSTER
+    \n - To list your flagged environments, run:\n\tkubectl prompt list
+    \n - To clear your flagged environments, run:\n\tkubectl prompt remove${RESTORE}"
+    exit 0
+}
+
+if [ $# -eq 0 ] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
+    description
+fi
+
+
+
+### Add an environment to prompt
+function add_usage() {
+    echo -e "\nTo add a namespace or cluster that will trigger the prompt, run the command below.
+Note: Accepts only one [-c] OR [-n] argument per command:\n
+\t- kubectl prompt add [-c cluster] OR [-n namespace] NAME${RESTORE}\n"
+    exit 0
+}
+
+function add_prompt() {
+[ $# -eq 0 ] && add_usage
+    while getopts ":c:n:" arg; do
+        case $arg in
+            c) # Add Cluster
+               export CLUSTER="${OPTARG}"
+               ;;
+            n) # Add Namespace
+               export NAMESPACE="${OPTARG}"
+               ;;
+            *)
+               add_usage
+               exit 1
+               ;;
+         esac
+    done
+    echo;
+    if [[ "$NAMESPACE" ]]; then
+        read -p "${YELLOW}* Add the namespace ${NAMESPACE} to prompt list [y/n]? ${RESTORE}" answer
+        [[ "$answer" != "y" ]] && exit 0
+        echo -e "\n${YELLOW}* Adding ${CLUSTER}${NAMESPACE} to \${KUBECTL_NAMESPACE_PROMPT} in ~/.bash_profile\n- The changes will be applied after starting a new terminal session or after running: source ~/.bash_profile ${RESTORE}"
+        KUBECTL_NAMESPACE_PROMPT="${KUBECTL_NAMESPACE_PROMPT[@]} ${NAMESPACE}"
+        ex '+g/KUBECTL_NAMESPACE_PROMPT=/d' -cwq ~/.bash_profile
+        echo "export KUBECTL_NAMESPACE_PROMPT=\"${KUBECTL_NAMESPACE_PROMPT}\"" >> ~/.bash_profile
+    elif [[ "$CLUSTER" ]]; then
+        read -p "${YELLOW}* Add the cluster ${CLUSTER} to prompt list [y/n]? ${RESTORE}" answer
+        [[ "$answer" != "y" ]] && exit 0
+        echo -e "\n${YELLOW}* Adding ${CLUSTER} to \${KUBECTL_CLUSTER_PROMPT} in ~/.bash_profile\n- The changes will be applied after starting a new terminal session or after running: source ~/.bash_profile ${RESTORE}"
+        KUBECTL_CLUSTER_PROMPT+="${CLUSTER/%/ }"
+        ex '+g/KUBECTL_CLUSTER_PROMPT=/d' -cwq ~/.bash_profile
+        echo "export KUBECTL_CLUSTER_PROMPT=\"${KUBECTL_CLUSTER_PROMPT}\"" >> ~/.bash_profile
+    fi
+
+    # Add function to check user context when kubectl is invoked.
+    if [[ ! -z "$NAMESPACE" ]] || [[ ! -z "$CLUSTER" ]]; then
+        ex '+g/function kubectl/d' -cwq ~/.bash_profile
+        echo 'function kubectl() { kube=$(which kubectl); $kube prompt "${@}" && command $kube "${@}" ; }' >> ~/.bash_profile
+        exit 0
+    fi
+}
+
+
+
+### Clear prompt list
+function remove_prompt() {
+    ex '+g/KUBECTL_NAMESPACE_PROMPT=/d' -cwq ~/.bash_profile
+    ex '+g/KUBECTL_CLUSTER_PROMPT=/d' -cwq ~/.bash_profile
+    ex '+g/function kubectl/d' -cwq ~/.bash_profile
+    echo -e "\nCleared prompt list.\nPlease open a new terminal for it to take affect.\n"
+    exit 0
+}
+
+
+
+### List flagged environments
+function list_prompt() {
+    echo -e "\n${YELLOW}CLUSTERS: ${KUBECTL_CLUSTER_PROMPT}\nNAMESPACES: ${KUBECTL_NAMESPACE_PROMPT}${RESTORE}\n"
+    exit 0
+}
+
+
+### Prompt user if running in a flagged envirinment
+function prompt() {
+    clear; echo -e "${RED}#################################################################################
+\t*** You are operating in a flagged environment: ${NAMESPACE}${CLUSTER} ***
+#################################################################################${RESTORE}\n
+${YELLOW}Command: ${COMMAND}\n${RESTORE}"
+    read -p "${RED}Proceed [yes/no]?${RESTORE} " answer
+    echo -e "\n\n"
+    [[ "$answer" != "yes" ]] && exit 1
+    exit 0
+}
+
+
+# Skip checks if user has not assigned any (using kubectl prompt add [-n namespace OR -c cluster]
+if [[ ! -z "$KUBECTL_NAMESPACE_PROMPT" ]] || [[ ! -z "$KUBECTL_CLUSTER_PROMPT" ]]; then
+  # Only prompt when the command would cause the state of the env to change.
+    echo "$@" | grep "deploy\|create\|apply\|set \|delete\|scale " 1>/dev/null
+    if [ $? -eq 0 ]; then
+        NAMESPACE=$(kubectl config view --template='{{ range .contexts }}{{ if eq .name "'$(kubectl config current-context)'" }}{{ .context.namespace }}{{ end }}{{ end }}')
+        CLUSTER=$(kubectl config view --template='{{ range .contexts }}{{ if eq .name "'$(kubectl config current-context)'" }}{{ .context.cluster }}{{ end }}{{ end }}')
+        if [[ "$KUBECTL_NAMESPACE_PROMPT" =~ "$NAMESPACE" ]]; then
+            CLUSTER=''
+            prompt "$NAMESPACE"
+        elif [[ "$KUBECTL_CLUSTER_PROMPT" =~ "$CLUSTER" ]]; then
+            NAMESPACE=''
+            prompt "$CLUSTER"
+        fi
+    fi
+fi
+
+
+case "$1" in
+    "add") add_prompt ${@/$1/} ;;
+    "remove") remove_prompt ${COMMAND};;
+    "list") list_prompt ;;
+    *) exit 0 ;;
+esac
