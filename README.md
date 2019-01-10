@@ -61,6 +61,9 @@ Option | Required | Description | Example
 - Clear flagged environments: ```kubectl prompt remove```
 - View description: ```kubectl prompt```
 
+_Note: When removing the prompt plugin, delete the line beginning with `function kubectl()` and `KUBECTL_*_PROMPT` in your ~/.bash_profile._
+
+
 
 ### kubectl ip
 ![kap_ip](https://user-images.githubusercontent.com/22456127/46684546-1c604d00-cbc1-11e8-8b8f-9e2684e42121.gif)
