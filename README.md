@@ -64,6 +64,15 @@ Option | Required | Description | Example
 _Note: When removing the prompt plugin, delete the line beginning with `function kubectl()` and `KUBECTL_*_PROMPT` in your ~/.bash_profile._
 
 
+### kubectl image
+![image](https://user-images.githubusercontent.com/22456127/53746358-02285380-3e6f-11e9-901f-abc1a824b6c7.gif)
+- Search for Docker images
+- If you have a Google Container Registry, run ```kubectl image -c``` to set it as the default for future searches.
+- If _not_ configured with ```-c```, searches will use Docker Hub by default.
+- Adding ```-p``` will search Docker Hub, regardless of any default.
+
+Example:
+```kubectl image -i kafka```
 
 ### kubectl ip
 ![kap_ip](https://user-images.githubusercontent.com/22456127/46684546-1c604d00-cbc1-11e8-8b8f-9e2684e42121.gif)
