@@ -1,0 +1,83 @@
+#!/bin/bash
+
+
+usage() { echo -e "Search for docker images.\nUsage: kubectl img <options> -i <image>" && grep " .)\ #" $0; exit 0; }
+[ $# -eq 0 ] && echo -e "\nERROR: Missing image name [-i].\n" && usage
+
+while getopts ":i:cph" arg; do
+ case $arg in
+   i) # Image name to search.
+      IMAGE=${OPTARG}
+     ;;
+   c) # Configure your Google Registry. Uses Docker Hub if not provided.
+      echo -e "\nType the name of your Google registry (i.e: us.gcr.io/myProject): "
+      read REGISTRY
+      read -p "Save ${REGISTRY} for future reference? [y/n]: " save
+      if [[ "$save" == "y" ]]; then
+    # Overwrite or add default registry
+          ex '+g/IMG_REGISTRY=/d' -cwq ~/.bash_profile
+          echo 'export IMG_REGISTRY="'$REGISTRY'"' >> ~/.bash_profile
+          echo -e "\nSaved to ~/.bash_profile. Source or open a new terminal to take effect."
+      fi
+      IMG_REGISTRY="$REGISTRY"
+     ;;
+   p) # Search Docker hub. Default, useful only if you've configured a default registry with [-c].
+      IMG_REGISTRY=""
+     ;;
+   h) # Display help.
+      usage
+      exit 0
+     ;;
+   *)
+     ;;
+ esac
+done
+
+REGISTRY=${IMG_REGISTRY:-}
+
+RESTORE=$(echo -en '\033[0m')
+LGREYBG=$(echo -en '\033[38;5;00m \033[48;5;7m')
+DGREYBG=$(echo -en '\033[38;5;15m \033[48;5;8m')
+BLUEBG=$(echo -en '\033[38;5;15m \033[48;5;27m')
+
+if [[ "$IMAGE" ]]; then
+    IFS=$'\n'
+    case "$REGISTRY" in
+        *"gcr.io"*)
+          echo -e "\nSearching $REGISTRY for $IMAGE."
+          available_images=$(gcloud container images list-tags ${REGISTRY}/${IMAGE} --limit=20 --format='(digest,tags,timestamp.datetime)' | grep -v TAGS)
+          [ $? -ne 0 ] && echo -e "\nNo images found for $IMAGE.\n" && exit 1
+          count=1
+        ;;
+        *)
+          REGISTRY=''
+          echo -e "\nSearching Docker Hub for $IMAGE."
+          available_images=($(docker search --limit=25 "${REGISTRY}/$IMAGE" | sed -e 's|TAG||g; s|\[OK\]||g; s|AUTOMATED||g; s|OFFICIAL||g' | sed 's/[[:blank:]]*$//'))
+          [ "${#available_images[@]}" -le 1 ] && echo -e "\nNo images found for $IMAGE.\n" && exit 1
+          count=0 
+        ;;
+    esac
+
+    COLOR="$LGREYBG"
+    echo -e "\nLatest tags for $IMAGE:\n"
+    index='   '
+    for i in ${available_images[@]}; do
+        if [ ${count} -gt 0 ]; then
+            index='['${count}']'
+        fi
+
+        if [ $count -lt 10 ]; then
+            PAD=' '
+        elif [ $count -ge 10 ]; then
+            PAD=''
+        fi
+
+        let count=count+1
+        echo "${COLOR}${index}${PAD} $i${RESTORE}"
+        [[ "$COLOR" == "$LGREYBG" ]] && COLOR="$DGREYBG" || COLOR="$LGREYBG"
+    done
+    echo
+else
+    echo -e "\n\nMust provide the image name.\n"
+    exit 1
+fi
