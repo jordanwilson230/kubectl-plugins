@@ -33,6 +33,10 @@ while getopts ":i:cph" arg; do
  esac
 done
 
+if [ "$#" -eq 1 ] && [[ ! "$*" =~ "^-" ]]; then
+    IMAGE="$*"
+fi
+
 REGISTRY=${IMG_REGISTRY:-}
 
 RESTORE=$(echo -en '\033[0m')
@@ -78,6 +82,6 @@ if [[ "$IMAGE" ]]; then
     done
     echo
 else
-    echo -e "\n\nMust provide the image name.\n"
+    echo -e "\n\nMust provide the image name [-i] if passing other flags.\n"
     exit 1
 fi
