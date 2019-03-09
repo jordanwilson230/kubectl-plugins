@@ -70,6 +70,8 @@ _Note: When removing the prompt plugin, delete the line beginning with `function
 - If you have a Google Container Registry, run ```kubectl image -c``` to set it as the default for future searches.
 - If _not_ configured with ```-c```, searches will use Docker Hub by default.
 - Adding ```-p``` will search Docker Hub, regardless of any default.
+- Sorts Docker Hub images by number of stars.
+- Sorts GCR images by upload date.
 
 Example:
 ```kubectl image kafka```
