@@ -14,7 +14,11 @@ kubectl krew install prompt
 #### To Uninstall
 ```
 kubectl krew remove exec-as
+```
+To remove the fimages plugin:
+```
 kubectl krew remove fimages
+ex '+g/IMG_REGISTRY=/d' -cwq ~/.bash_profile
 ```
 To remove the prompt plugin:
 ```
@@ -40,16 +44,16 @@ Option | Required | Description | Example
 
 
 ## kubectl fimages
-![image](https://user-images.githubusercontent.com/22456127/53746358-02285380-3e6f-11e9-901f-abc1a824b6c7.gif)
-- Search for Docker images
-- If you have a Google Container Registry, run ```kubectl image -c``` to set it as the default for future searches.
+![fimages](https://user-images.githubusercontent.com/22456127/54236801-dc442400-44ea-11e9-9fc8-107ed3377999.gif)
+- Find and sort Docker images
+- If you have a Google Container Registry, run ```kubectl fimages -c``` to set it as the default for future searches.
 - If _not_ configured with ```-c```, searches will use Docker Hub by default.
 - Adding ```-p``` will search Docker Hub, regardless of any default.
 - Sorts Docker Hub images by number of stars.
 - Sorts GCR images by upload date.
 
 Example:
-```kubectl image kafka```
+```kubectl fimages kafka```
 
 
 ## kubectl prompt
