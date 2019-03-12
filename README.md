@@ -33,7 +33,7 @@ ex '+g/KUBECTL_\(.*\)_PROMPT/d' -cwq ~/.bash_profile
 Option | Required | Description | Example
 ------------- | ------------- | ------------- | -------------
 -h | N | Show usage | *`kubectl exec-as -h`*
--p | Y | Pod name. The `-p` flag can be omitted if no other flags are passed (i.e., `kubectl exec-as rabbitmq-0`)| *`kubectl -p rabbitmq-0`*
+-p | Y | Pod name. The `-p` flag can be omitted if no other flags are passed (i.e., `kubectl exec-as rabbitmq-0`)| *`kubectl exec-as -p rabbitmq-0`*
 -u | N | User to exec as. Defaults to root | *`kubectl exec-as -u rabbitmq -p rabbitmq-0`*
 -c | N | Specify container within pod | *`kubectl exec-as -c my-container -p rabbitmq-0`*
 -- | N | Pass an optional command. Defaults to /bin/sh | *`kubectl exec-as rabbitmq-0 -- ls /etc/rabbitmq`*
