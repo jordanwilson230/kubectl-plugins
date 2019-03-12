@@ -7,14 +7,14 @@ A collection of plugins installable via [Krew](https://github.com/GoogleContaine
 #### Installing with Krew
 ```
 kubectl krew install exec-as
-```
-```
+kubectl krew install fimages
 kubectl krew install prompt
 ```
 
 #### To Uninstall
 ```
 kubectl krew remove exec-as
+kubectl krew remove fimages
 ```
 To remove the prompt plugin:
 ```
@@ -37,6 +37,19 @@ Option | Required | Description | Example
 -u | N | User to exec as. Defaults to root | *`kubectl exec-as -u rabbitmq -p rabbitmq-0`*
 -c | N | Specify container within pod | *`kubectl exec-as -c my-container -p rabbitmq-0`*
 -- | N | Pass an optional command. Defaults to /bin/sh | *`kubectl exec-as rabbitmq-0 -- ls /etc/rabbitmq`*
+
+
+## kubectl fimages
+![image](https://user-images.githubusercontent.com/22456127/53746358-02285380-3e6f-11e9-901f-abc1a824b6c7.gif)
+- Search for Docker images
+- If you have a Google Container Registry, run ```kubectl image -c``` to set it as the default for future searches.
+- If _not_ configured with ```-c```, searches will use Docker Hub by default.
+- Adding ```-p``` will search Docker Hub, regardless of any default.
+- Sorts Docker Hub images by number of stars.
+- Sorts GCR images by upload date.
+
+Example:
+```kubectl image kafka```
 
 
 ## kubectl prompt
