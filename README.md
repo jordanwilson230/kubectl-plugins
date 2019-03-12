@@ -7,14 +7,18 @@ A collection of plugins installable via [Krew](https://github.com/GoogleContaine
 #### Installing with Krew
 ```
 kubectl krew install exec-as
-```
-```
+kubectl krew install fimages
 kubectl krew install prompt
 ```
 
 #### To Uninstall
 ```
 kubectl krew remove exec-as
+```
+To remove the fimages plugin:
+```
+kubectl krew remove fimages
+ex '+g/IMG_REGISTRY=/d' -cwq ~/.bash_profile
 ```
 To remove the prompt plugin:
 ```
@@ -37,6 +41,19 @@ Option | Required | Description | Example
 -u | N | User to exec as. Defaults to root | *`kubectl exec-as -u rabbitmq -p rabbitmq-0`*
 -c | N | Specify container within pod | *`kubectl exec-as -c my-container -p rabbitmq-0`*
 -- | N | Pass an optional command. Defaults to /bin/sh | *`kubectl exec-as rabbitmq-0 -- ls /etc/rabbitmq`*
+
+
+## kubectl fimages
+![fimages](https://user-images.githubusercontent.com/22456127/54236801-dc442400-44ea-11e9-9fc8-107ed3377999.gif)
+- Find and sort Docker images
+- If you have a Google Container Registry, run ```kubectl fimages -c``` to set it as the default for future searches.
+- If _not_ configured with ```-c```, searches will use Docker Hub by default.
+- Adding ```-p``` will search Docker Hub, regardless of any default.
+- Sorts Docker Hub images by number of stars.
+- Sorts GCR images by upload date.
+
+Example:
+```kubectl fimages kafka```
 
 
 ## kubectl prompt
