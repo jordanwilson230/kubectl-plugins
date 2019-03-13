@@ -7,18 +7,12 @@ A collection of plugins installable via [Krew](https://github.com/GoogleContaine
 #### Installing with Krew
 ```
 kubectl krew install exec-as
-kubectl krew install fimages
 kubectl krew install prompt
 ```
 
 #### To Uninstall
 ```
 kubectl krew remove exec-as
-```
-To remove the fimages plugin:
-```
-kubectl krew remove fimages
-ex '+g/IMG_REGISTRY=/d' -cwq ~/.bash_profile
 ```
 To remove the prompt plugin:
 ```
