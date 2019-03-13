@@ -43,18 +43,6 @@ Option | Required | Description | Example
 -- | N | Pass an optional command. Defaults to /bin/sh | *`kubectl exec-as rabbitmq-0 -- ls /etc/rabbitmq`*
 
 
-## kubectl fimages
-![fimages](https://user-images.githubusercontent.com/22456127/54236801-dc442400-44ea-11e9-9fc8-107ed3377999.gif)
-- Find and sort Docker images
-- If you have a Google Container Registry, run ```kubectl fimages -c``` to set it as the default for future searches.
-- If _not_ configured with ```-c```, searches will use Docker Hub by default.
-- Adding ```-p``` will search Docker Hub, regardless of any default.
-- Sorts Docker Hub images by number of stars.
-- Sorts GCR images by upload date.
-
-Example:
-```kubectl fimages kafka```
-
 
 ## kubectl prompt
 ![prompt](https://user-images.githubusercontent.com/22456127/47271066-91793e00-d542-11e8-9a97-71f2457aef51.gif)
