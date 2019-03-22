@@ -21,6 +21,15 @@ source ~/.bash_profile
 rm -rf ~/.kube/plugins/jordanwilson230
 ex '+g/jordanwilson230/d' -cwq ~/.bash_profile
 ```
+Remove the ```image``` plugin:
+```
+ex '+g/IMG_REGISTRY=/d' -cwq ~/.bash_profile
+```
+Remove the ```prompt``` plugin:
+```
+ex '+g/function kubectl()/d' -cwq ~/.bash_profile
+ex '+g/KUBECTL_\(.*\)_PROMPT/d' -cwq ~/.bash_profile
+```
 
 
 ### kubectl ssh
@@ -60,8 +69,6 @@ Option | Required | Description | Example
 - List flagged environments: ```kubectl prompt list```
 - Clear flagged environments: ```kubectl prompt remove```
 - View description: ```kubectl prompt```
-
-_Note: When removing the prompt plugin, delete the line beginning with `function kubectl()` and `KUBECTL_*_PROMPT` in your ~/.bash_profile._
 
 
 ### kubectl image
