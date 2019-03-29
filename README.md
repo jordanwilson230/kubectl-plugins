@@ -36,6 +36,7 @@ ex '+g/KUBECTL_\(.*\)_PROMPT/d' -cwq ~/.bash_profile
 ![kapssh](https://user-images.githubusercontent.com/22456127/46683069-4152c100-cbbd-11e8-9db5-9fb319bb320b.gif)
 - Like kubectl exec, but offers a --user flag to exec as root (or any other user)
 - 'ssh' is a misnomer (it works by mounting a docker socket as a volume), but it's easier to work with as a command.
+- You must be in the same namespace as the target pod (passing ```-n namespace``` is not currently allowed).
 - Kudos to mikelorant for thinking of the docker socket! :)
 
 Option | Required | Description | Example
