@@ -13,7 +13,7 @@ A collection of plugins for kubectl integration (for Kubectl versions >= 1.12.0)
 ```bash
 git clone https://github.com/jordanwilson230/kubectl-plugins.git
 cd kubectl-plugins
-./install-kubectl-plugins.sh
+./install-plugins.sh
 source ~/.bash_profile
 ```
 #### To Uninstall
