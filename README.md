@@ -32,10 +32,10 @@ ex '+g/KUBECTL_\(.*\)_PROMPT/d' -cwq ~/.bash_profile
 ```
 
 
-### kubectl exec-as
+### kubectl ssh
 ![exec](https://user-images.githubusercontent.com/22456127/54227565-97ae8d80-44d6-11e9-907c-8297a8b54010.gif)
 - Like kubectl exec, but offers a --user flag to exec as root (or any other user)
-- Works by mounting a docker socket as a volume.
+- _ssh is a misnomer_, it actually works by mounting a docker socket as a volume.
 - You must be in the same namespace as the target pod (passing ```-n namespace``` is not currently allowed).
 - Kudos to mikelorant for thinking of the docker socket! :)
 
@@ -46,6 +46,7 @@ Option | Required | Description | Example
 -u | N | User to exec as. Defaults to root | *`kubectl exec-as -u kafka -p kafka-0`*
 -c | N | Specify container within pod | *`kubectl exec-as -c burrow-metrics -p kafka-0`*
 -- | N | Pass an optional command. Defaults to /bin/sh | *`kubectl exec-as kafka -- ls /etc/burrow`*
+
 
 
 ### kubectl switch
