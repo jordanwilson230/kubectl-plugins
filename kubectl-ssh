@@ -81,6 +81,7 @@ read -r -d '' OVERRIDES <<EOF
                 "restartPolicy": "Never",
                 "args": [
                   "exec",
+                  "--privileged",
                   "-it",
                   "-u",
                   "${USERNAME}",
