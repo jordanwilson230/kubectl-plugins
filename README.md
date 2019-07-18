@@ -8,6 +8,7 @@ A collection of plugins for kubectl integration (for Kubectl versions >= 1.12.0)
 - To upgrade your kubectl version via homebrew: ```brew upgrade kubectl```, or via gcloud: ```gcloud components update```
 - The kubectl-ip plugin requires jq ( brew/apt/yum install jq )
 - All coding was written to maintain compatibility across both BSD and GNU.
+- Requires Bash.
 
 ## Install on Linux/Mac
 ```bash
