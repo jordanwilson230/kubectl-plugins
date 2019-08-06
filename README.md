@@ -37,15 +37,18 @@ ex '+g/KUBECTL_\(.*\)_PROMPT/d' -cwq ~/.bash_profile
 ![kapssh](https://user-images.githubusercontent.com/22456127/46683069-4152c100-cbbd-11e8-9db5-9fb319bb320b.gif)
 - Like kubectl exec, but offers a --user flag to exec as root (or any other user)
 - 'ssh' is a misnomer (it works by mounting a docker socket as a volume), but it's easier to work with as a command.
-- You must be in the same namespace as the target pod (passing ```-n namespace``` is not currently allowed).
+- You must be in the same namespace as the target pod or you can use ```-n namespace``` option to specify the namespace
 - Kudos to mikelorant for thinking of the docker socket! :)
+
+Usage: ```kubectl ssh [OPTIONS] <pod name> [-- <commands...>]```
 
 Option | Required | Description | Example
 ------------- | ------------- | ------------- | -------------
 -h | N | Show usage | *`kubectl ssh -h`*
--p | Y | Pod name. The `-p` flag can be omitted if no other flags are passed (i.e., `kubectl ssh kafka-0`)| *`kubectl -p kafka-0`*
--u | N | User to exec as. Defaults to root | *`kubectl ssh -u kafka -p kafka-0`*
--c | N | Specify container within pod | *`kubectl ssh -c burrow-metrics -p kafka-0`*
+-d | N | Enable debug mode. Print a trace of each commands |  *`kubectl ssh -d kafka-0`*
+-n | N | The namespace scope for this CLI request | *`kubectl ssh -n infra kafka-0`*
+-u | N | User to exec as. Defaults to root | *`kubectl ssh -u kafka kafka-0`*
+-c | N | Specify container within pod | *`kubectl ssh -c burrow-metrics kafka-0`*
 -- | N | Pass an optional command. Defaults to /bin/sh | *`kubectl ssh kafka -- ls /etc/burrow`*
 
 
