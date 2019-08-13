@@ -86,7 +86,7 @@ fi
 echo -e "\nConnecting...\nPod: ${POD}\nNamespace: ${NAMESPACE}\nUser: ${USERNAME}\nContainer: ${CONTAINER}\nCommand: $COMMAND\n"
 
 # Limits concurrent sessions (each session deploys a pod) to 2. It's not necessary, just a preference.
-test "$(exec "${KUBECTL}" get po "$(whoami)-1" 2>/dev/null)" && container="$(whoami)-2" || container="$(whoami)-1"
+test "$(exec "${KUBECTL}" get po "$(whoami|tr -dc '[:alnum:]')-1" 2>/dev/null)" && container="$(whoami|tr -dc '[:alnum:]')-2" || container="$(whoami|tr -dc '[:alnum:]')-1"
 
 # We want to mount the docker socket on the node of the pod we're exec'ing into.
 NODENAME=$( ${KUBECTL} get pod "${POD}" -o go-template='{{.spec.nodeName}}' )
