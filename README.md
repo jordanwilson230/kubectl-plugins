@@ -26,15 +26,19 @@ ex '+g/KUBECTL_\(.*\)_PROMPT/d' -cwq ~/.bash_profile
 ![exec](https://user-images.githubusercontent.com/22456127/54227565-97ae8d80-44d6-11e9-907c-8297a8b54010.gif)
 - Like kubectl exec, but offers a --user flag to exec as root (or any other user)
 - Works by mounting a docker socket as a volume
+- You must be in the same namespace as the target pod or you can use ```-n namespace``` option to specify the namespace
 - Kudos to mikelorant for thinking of the docker socket! :)
+
+Usage: ```kubectl exec-as [OPTIONS] <pod name> [-- <commands...>]```
 
 Option | Required | Description | Example
 ------------- | ------------- | ------------- | -------------
 -h | N | Show usage | *`kubectl exec-as -h`*
--p | Y | Pod name. The `-p` flag can be omitted if no other flags are passed (i.e., `kubectl exec-as rabbitmq-0`)| *`kubectl exec-as -p rabbitmq-0`*
--u | N | User to exec as. Defaults to root | *`kubectl exec-as -u rabbitmq -p rabbitmq-0`*
--c | N | Specify container within pod | *`kubectl exec-as -c my-container -p rabbitmq-0`*
--- | N | Pass an optional command. Defaults to /bin/sh | *`kubectl exec-as rabbitmq-0 -- ls /etc/rabbitmq`*
+-d | N | Enable debug mode. Print a trace of each commands |  *`kubectl exec-as -d kafka-0`*
+-n | N | The namespace scope for this CLI request | *`kubectl exec-as -n infra kafka-0`*
+-u | N | User to exec as. Defaults to root | *`kubectl exec-as -u kafka kafka-0`*
+-c | N | Specify container within pod | *`kubectl exec-as -c burrow-metrics kafka-0`*
+-- | N | Pass an optional command. Defaults to /bin/sh | *`kubectl exec-as kafka -- ls /etc/burrow`*
 
 
 
