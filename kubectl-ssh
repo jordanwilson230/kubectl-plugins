@@ -38,7 +38,7 @@ USERNAME="root"
 CONTAINER="NONE"
 NAMESPACE="NONE"
 
-while getopts "dh:p:n:u:c" arg; do
+while getopts "d:h:p:n:u:c:" arg; do
   case $arg in
     p) # Specify pod name.
       POD=${OPTARG}
