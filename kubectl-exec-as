@@ -5,7 +5,7 @@ set -eu
 usage() {
   cat <<EOF
 
-Usage: kubectl ezec-as [OPTIONS] <pod name> [-- <commands...>]
+Usage: kubectl exec-as [OPTIONS] <pod name> [-- <commands...>]
 
 Run a command in a running container
 
@@ -37,7 +37,7 @@ USERNAME="root"
 CONTAINER="NONE"
 NAMESPACE="NONE"
 
-while getopts "dh:p:n:u:c" arg; do
+while getopts "hdp:n:u:c:" arg; do
   case $arg in
     p) # Specify pod name.
       POD=${OPTARG}
@@ -66,7 +66,7 @@ done
 
 shift $((OPTIND-1))
 if [[ -z ${1+x} ]]; then
-  echo "Error: You must specify the pod name" >&2
+  echo "Error: You have to specify the pod name" >&2
   usage
 fi
 POD="$1"
