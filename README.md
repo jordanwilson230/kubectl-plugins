@@ -1,5 +1,6 @@
-
 # kubectl-plugins
+[![CI Status](https://github.com/jordanwilson230/kubectl-plugins/workflows/CI/badge.svg)](https://github.com/jordanwilson230/kubectl-plugins/actions)
+
 A collection of plugins for kubectl integration (for Kubectl versions >= 1.12.0)
 
 *A portion of these plugins are available on [krew](https://github.com/kubernetes-sigs/krew) as well.*
