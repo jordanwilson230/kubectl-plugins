@@ -59,7 +59,7 @@ jobs:
       shell: bash -l {0}
       run: |
         sudo apt update; sudo apt install -y ruby
-        kubectl upti/me && printf "\n\u2705[PASS] Uptime Ran\n"
+        kubectl uptime && printf "\n\u2705[PASS] Uptime Ran\n"
 
     - name: kubectl prompt
       shell: bash -l {0}
