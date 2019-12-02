@@ -1,8 +1,8 @@
-name: "Start Minikube"
+name: "CI"
 on: [pull_request, push]
 jobs:
   kubectl-plugins-check:
-    name: Verify Plugins
+    name: Validate Plugins
     runs-on: ubuntu-latest
     steps:
     - name: Checkout kubectl-plugins repo
