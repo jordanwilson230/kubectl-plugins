@@ -1,16 +1,13 @@
 name: "CI"
 on: [pull_request, push]
 jobs:
-  kubectl-plugins-check:
-    name: Validate Plugins
+  krew-plugins-check:
+    name: Validate PR ${{ github.event.pull_request.head.sha }}
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout kubectl-plugins repo
+    - name: Checkout repo
       uses: actions/checkout@v1
-      with:
-        repository: jordanwilson230/kubectl-plugins
-        ref: krew
-
+         
     - name: Setup Minikube
       id: minikube
       uses: CodingNagger/minikube-setup-action@v1.0.2
@@ -21,16 +18,35 @@ jobs:
     - name: Sanity Check
       run: kubectl get pods -nkube-system && (printf "\n\u2705[PASS] Sanity Check (get pods)\n") || (printf "\n\u274c [FAIL] Unable to retrieve pod list.\n" && exit 1)
 
-    - name: Install plugins
-      shell: bash -l {0}
-      run: |  
-        cd ../kubectl-plugins
-        ./install-plugins.sh
-        kubectl config set-context $(kubectl config current-context) --namespace=kube-system && (printf "\n\u2705[PASS] Installation Script.\n") || (printf "\n\u274c [FAIL] Installation error\n" && exit 1)
-
-    - name: kubectl ssh
+    - name: Install Krew
       shell: bash -l {0}
       run: |
+        # install krew (use latest release)
+        (
+          set -x; cd "$(mktemp -d)" &&
+          krew_latest=$(basename $(curl -fsSLI -o /dev/null -w %{url_effective} https://github.com/kubernetes-sigs/krew/releases/latest))
+          curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/download/${krew_latest}/krew.{tar.gz,yaml}"
+          tar zxvf krew.tar.gz &&
+          KREW=./krew-"$(uname | tr '[:upper:]' '[:lower:]')_amd64" &&
+          "$KREW" install --manifest=krew.yaml --archive=krew.tar.gz &&
+          "$KREW" update
+        )
+
+    - name: Test Install
+      shell: bash -l {0}
+      run: |
+        export PATH="~/.krew/bin:$PATH"
+        plugins=('kubectl-ssh' 'kubectl-prompt')
+        for plugin in "${plugins[@]}"; do
+          kubectl krew install --manifest=./plugins/${plugin}.yaml
+          [ $? -ne 0 ] && (printf "\n\u274c [FAIL] Error installing $plugin - exit code $?") && exit 1
+          (printf "\n\u2705[OK] ${plugin} successfully installed\n-------------\n")
+        done
+
+    - name: Run kubectl-ssh
+      shell: bash -l {0}
+      run: |
+        kubectl config set-context $(kubectl config current-context) --namespace=kube-system && (printf "\n\u2705[PASS] Installation Script.\n") || (printf "\n\u274c [FAIL] Installation error\n" && exit 1)
         kubectl run test --restart=Never --image=debian --command=true -- sleep 300
         sleep 10
         # Grant shell login for games user
@@ -48,7 +64,7 @@ jobs:
           exit 1
         fi
 
-    - name: kubectl prompt
+    - name: Run kubectl-prompt
       shell: bash -l {0}
       run: |
         # Interactive input required. Just validate the help prompt.
