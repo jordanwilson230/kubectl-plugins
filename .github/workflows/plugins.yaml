@@ -32,18 +32,18 @@ jobs:
           "$KREW" update
         )
 
-    - name: Test Install
+    - name: Test Plugin Installation
       shell: bash -l {0}
       run: |
         export PATH="~/.krew/bin:$PATH"
-        plugins=('kubectl-ssh' 'kubectl-prompt')
+        plugins=('kubectl-exec-as' 'kubectl-prompt')
         for plugin in "${plugins[@]}"; do
           kubectl krew install --manifest=./plugins/${plugin}.yaml
           [ $? -ne 0 ] && (printf "\n\u274c [FAIL] Error installing $plugin - exit code $?") && exit 1
           (printf "\n\u2705[OK] ${plugin} successfully installed\n-------------\n")
         done
 
-    - name: Run kubectl-ssh
+    - name: Run kubectl-exec-as
       shell: bash -l {0}
       run: |
         kubectl config set-context $(kubectl config current-context) --namespace=kube-system && (printf "\n\u2705[PASS] Installation Script.\n") || (printf "\n\u274c [FAIL] Installation error\n" && exit 1)
@@ -57,7 +57,7 @@ jobs:
         sed -i 's|"tty": true|"tty": false|g' $(which kubectl-ssh)
         sed -i 's|"stdin": true|"stdin": false|g' $(which kubectl-ssh)
         sed -i 's|"stdinOnce": true|"stdinOnce": false|g' $(which kubectl-ssh)
-        if [[ $(kubectl ssh -u games test -- whoami | tail -n1) == "games" ]]; then 
+        if [[ $(kubectl exec-as -u games test -- whoami | tail -n1) == "games" ]]; then 
           printf "\n\u2705 Successfully logged in as games user.\n"
         else
           printf "\n\u274c Unable to login as games user.\n"
