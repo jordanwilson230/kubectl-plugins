@@ -35,7 +35,7 @@ jobs:
     - name: Test Plugin Installation
       shell: bash -l {0}
       run: |
-        export PATH="~/.krew/bin:$PATH"
+        export PATH="${HOME}/.krew/bin:$PATH"
         plugins=('kubectl-exec-as' 'kubectl-prompt')
         for plugin in "${plugins[@]}"; do
           kubectl krew install --manifest=./plugins/${plugin}.yaml
