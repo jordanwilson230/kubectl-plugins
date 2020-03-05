@@ -36,14 +36,14 @@ jobs:
       shell: bash -l {0}
       run: |
         export PATH="${HOME}/.krew/bin:$PATH"
-        plugins=('kubectl-exec-as' 'kubectl-prompt')
+        plugins=('exec-as' 'prompt')
         for plugin in "${plugins[@]}"; do
           kubectl krew install --manifest=./plugins/${plugin}.yaml
           [ $? -ne 0 ] && (printf "\n\u274c [FAIL] Error installing $plugin - exit code $?") && exit 1
           (printf "\n\u2705[OK] ${plugin} successfully installed\n-------------\n")
         done
 
-    - name: Run kubectl-exec-as
+    - name: Run exec-as plugin
       shell: bash -l {0}
       run: |
         kubectl config set-context $(kubectl config current-context) --namespace=kube-system && (printf "\n\u2705[PASS] Installation Script.\n") || (printf "\n\u274c [FAIL] Installation error\n" && exit 1)
@@ -64,7 +64,7 @@ jobs:
           exit 1
         fi
 
-    - name: Run kubectl-prompt
+    - name: Run prompt plugin
       shell: bash -l {0}
       run: |
         # Interactive input required. Just validate the help prompt.
