@@ -36,6 +36,7 @@ jobs:
       shell: bash -l {0}
       run: |
         export PATH="${HOME}/.krew/bin:$PATH"
+        "At: $(pwd) with $(ls -a1) and $(ls -a1 plugins)"
         plugins=('exec-as' 'prompt')
         for plugin in "${plugins[@]}"; do
           kubectl krew install --manifest=./plugins/${plugin}.yaml
