@@ -15,6 +15,7 @@ Options:
   -n  If present, the namespace scope for this CLI request
   -u  Username or UID (format: <name|uid>[:<group|gid>])
   -c  Container name. If omitted, the first container in the pod will be chosen
+  -s  Name of the side-car container
 EOF
   exit 0
 }
@@ -37,8 +38,9 @@ COMMAND="/bin/sh"
 USERNAME="root"
 CONTAINER="NONE"
 NAMESPACE="NONE"
+container=""
 
-while getopts "hdp:n:u:c:" arg; do
+while getopts "hdp:n:u:c:s:" arg; do
   case $arg in
     p) # Specify pod name.
       POD=${OPTARG}
@@ -52,6 +54,9 @@ while getopts "hdp:n:u:c:" arg; do
       ;;
     c) # Specify container
       CONTAINER=${OPTARG}
+      ;;
+    s) # Specify side-car container name
+      container=${OPTARG}
       ;;
     d) # Enable debug mode
       set -x
@@ -85,8 +90,10 @@ fi
 
 echo -e "\nConnecting...\nPod: ${POD}\nNamespace: ${NAMESPACE}\nUser: ${USERNAME}\nContainer: ${CONTAINER}\nCommand: $COMMAND\n"
 
-# Limits concurrent sessions (each session deploys a pod) to 2. It's not necessary, just a preference.
-test "$(exec "${KUBECTL}" get po "$(whoami|tr -dc '[:alnum:]')-1" 2>/dev/null)" && container="$(whoami|tr -dc '[:alnum:]')-2" || container="$(whoami|tr -dc '[:alnum:]')-1"
+if [ -z "$container" ]; then
+    # Limits concurrent sessions (each session deploys a pod) to 2. It's not necessary, just a preference.
+    ${KUBECTL} get po "$(whoami|tr -dc '[:alnum:]')-1" >/dev/null 2>&1 && container="$(whoami|tr -dc '[:alnum:]')-2" || container="$(whoami|tr -dc '[:alnum:]')-1"
+fi
 
 # We want to mount the docker socket on the node of the pod we're exec'ing into.
 NODENAME=$( ${KUBECTL} get pod "${POD}" -o go-template='{{.spec.nodeName}}' )
