@@ -84,9 +84,8 @@ if [[ $# -gt 0 ]]; then
 fi
 
 echo -e "\nConnecting...\nPod: ${POD}\nNamespace: ${NAMESPACE}\nUser: ${USERNAME}\nContainer: ${CONTAINER}\nCommand: $COMMAND\n"
-
-# Limits concurrent sessions (each session deploys a pod) to 2. It's not necessary, just a preference.
-test "$(exec "${KUBECTL}" get po "$(whoami|tr -dc '[:alnum:]')-1" 2>/dev/null)" && container="$(whoami|tr -dc '[:alnum:]')-2" || container="$(whoami|tr -dc '[:alnum:]')-1"
+# $temp_container is the name of our temporary container which we use to connect behind the scenes. Will be cleaned up automatically.
+temp_container="ssh-pod-${RANDOM}"
 
 # We want to mount the docker socket on the node of the pod we're exec'ing into.
 NODENAME=$( ${KUBECTL} get pod "${POD}" -o go-template='{{.spec.nodeName}}' )
@@ -117,7 +116,7 @@ read -r -d '' OVERRIDES <<EOF || :
         "containers": [
             {
                 "image": "docker",
-                "name": "'$container'",
+                "name": "'temp_${container}'",
                 "stdin": true,
                 "stdinOnce": true,
                 "tty": true,
@@ -157,6 +156,6 @@ read -r -d '' OVERRIDES <<EOF || :
 }
 EOF
 
-trap '$KUBECTL delete pod $container >/dev/null 2>&1 &' 0 1 2 3 15
+trap '$KUBECTL delete pod $temp_container >/dev/null 2>&1 &' 0 1 2 3 15
 
-eval "$KUBECTL" run -it --restart=Never --image=docker --overrides="'${OVERRIDES}'" "$container"
+eval "$KUBECTL" run -it --restart=Never --image=docker --overrides="'${OVERRIDES}'" "$temp_container"
