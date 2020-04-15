@@ -116,7 +116,7 @@ read -r -d '' OVERRIDES <<EOF || :
         "containers": [
             {
                 "image": "docker",
-                "name": "'temp_${container}'",
+                "name": "'$temp_container'",
                 "stdin": true,
                 "stdinOnce": true,
                 "tty": true,
