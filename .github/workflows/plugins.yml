@@ -9,7 +9,7 @@ jobs:
       uses: actions/checkout@v1
       with:
         repository: jordanwilson230/kubectl-plugins
-        ref: master
+        ref: ${{ github.head_ref }}
 
     - name: Setup Minikube
       id: minikube
