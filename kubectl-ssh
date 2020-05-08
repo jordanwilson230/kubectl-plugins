@@ -130,6 +130,16 @@ read -r -d '' OVERRIDES <<EOF || :
                   "${CONTAINERID}",
                   $(to_json "${COMMAND}")
                 ],
+                "resources": {
+                  "limits": {
+                    "cpu": "400m",
+                    "memory": "512Mi"
+                  },
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "128Mi"
+                  }
+                },
                 "volumeMounts": [
                     {
                         "mountPath": "/var/run/docker.sock",
