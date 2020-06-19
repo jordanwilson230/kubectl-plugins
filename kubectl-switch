@@ -37,12 +37,17 @@ function list_clusters() {
 ### Switch cluster context
 function switch_cluster() {
   # Verify it's a valid cluster name with kubectl
-    CLUSTER_NAME=$(kubectl config get-clusters | grep "$CLUSTER$") # Allow fuzzying on cluster name
-
+    CLUSTER_NAME=$(kubectl config get-clusters | grep "$CLUSTER$")
   # Fallback in case the user has renamed their context for the cluster.
     if [ -z "${CLUSTER_NAME}" ]; then
-        CLUSTER_NAME=$(kubectl config get-contexts -o name | grep $CLUSTER)
-      # If both lookups have failed, exit 1.
+      # Allow fuzzying on context name
+        CLUSTER_NAME=($(kubectl config get-contexts -o name | grep $CLUSTER))
+      # If globbing gives more than one match, discard those and look for an exact match
+        if [ ${#CLUSTER_NAME[@]} -ne 1 ]; then
+            unset CLUSTER_NAME
+            CLUSTER_NAME=$(kubectl config get-contexts -o name | grep $CLUSTER$)
+        fi
+      # If all lookups have failed, exit 1.
         if [ -z "${CLUSTER_NAME}" ]; then
             RED=$(echo -en '\033[00;31m')
             YELLOW=$(echo -en '\033[00;33m')
