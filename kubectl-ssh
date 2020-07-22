@@ -89,7 +89,8 @@ temp_container="ssh-pod-${RANDOM}"
 
 # We want to mount the docker socket on the node of the pod we're exec'ing into.
 NODENAME=$( ${KUBECTL} get pod "${POD}" -o go-template='{{.spec.nodeName}}' )
-NODESELECTOR='"nodeSelector": {"kubernetes.io/hostname": "'$NODENAME'"},'
+HOSTNAME=$( ${KUBECTL} get node ${NODENAME} -o go-template='{{index .metadata.labels "kubernetes.io/hostname"}}' )
+NODESELECTOR='"nodeSelector": {"kubernetes.io/hostname": "'$HOSTNAME'"},'
 
 # Adds toleration if the target container runs on a tainted node. Assumes no more than one taint. Change if yours have more than one or are configured differently.
 TOLERATION_VALUE=$($KUBECTL get pod "${POD}" -ojsonpath='{.spec.tolerations[].value}') >/dev/null 2>&1
