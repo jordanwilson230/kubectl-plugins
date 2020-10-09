@@ -1,13 +1,6 @@
 #!/bin/bash
 
-case $SHELL in
-  *zsh* )
-    profile=.zshrc
-    ;;
-  * )
-    profile=.bash_profile
-    ;;
-esac
+profile=$(. ./which-shell.sh)
 
 echo "Detected shell: $SHELL"
 echo "Installing kubectl-plugins to ~/$profile"
