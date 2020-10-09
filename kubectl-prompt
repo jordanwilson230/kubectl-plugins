@@ -5,6 +5,7 @@ LBLUE=$(echo -en '\033[01;34m')
 YELLOW=$(echo -en '\033[00;33m')
 RESTORE=$(echo -en '\033[0m')
 
+SHELL_PROFILE=$(. ./which-shell.sh)
 
 COMMAND="${@}"
 export COMMAND="$COMMAND"
@@ -54,23 +55,23 @@ function add_prompt() {
     if [[ "$NAMESPACE" ]]; then
         read -p "${YELLOW}* Add the namespace ${NAMESPACE} to prompt list [y/n]? ${RESTORE}" answer
         [[ "$answer" != "y" ]] && exit 0
-        echo -e "\n${YELLOW}* Adding ${CLUSTER}${NAMESPACE} to \${KUBECTL_NAMESPACE_PROMPT} in ~/.bash_profile\n- The changes will be applied after starting a new terminal session or after running: source ~/.bash_profile ${RESTORE}"
+        echo -e "\n${YELLOW}* Adding ${CLUSTER}${NAMESPACE} to \${KUBECTL_NAMESPACE_PROMPT} in ~/${SHELL_PROFILE}\n- The changes will be applied after starting a new terminal session or after running: source ~/${SHELL_PROFILE} ${RESTORE}"
         KUBECTL_NAMESPACE_PROMPT="${KUBECTL_NAMESPACE_PROMPT[@]} ${NAMESPACE}"
-        ex '+g/KUBECTL_NAMESPACE_PROMPT=/d' -cwq ~/.bash_profile
-        echo "export KUBECTL_NAMESPACE_PROMPT=\"${KUBECTL_NAMESPACE_PROMPT}\"" >> ~/.bash_profile
+        ex '+g/KUBECTL_NAMESPACE_PROMPT=/d' -cwq ~/${SHELL_PROFILE}
+        echo "export KUBECTL_NAMESPACE_PROMPT=\"${KUBECTL_NAMESPACE_PROMPT}\"" >> ~/${SHELL_PROFILE}
     elif [[ "$CLUSTER" ]]; then
         read -p "${YELLOW}* Add the cluster ${CLUSTER} to prompt list [y/n]? ${RESTORE}" answer
         [[ "$answer" != "y" ]] && exit 0
-        echo -e "\n${YELLOW}* Adding ${CLUSTER} to \${KUBECTL_CLUSTER_PROMPT} in ~/.bash_profile\n- The changes will be applied after starting a new terminal session or after running: source ~/.bash_profile ${RESTORE}"
+        echo -e "\n${YELLOW}* Adding ${CLUSTER} to \${KUBECTL_CLUSTER_PROMPT} in ~/${SHELL_PROFILE}\n- The changes will be applied after starting a new terminal session or after running: source ~/${SHELL_PROFILE} ${RESTORE}"
         KUBECTL_CLUSTER_PROMPT+="${CLUSTER/%/ }"
-        ex '+g/KUBECTL_CLUSTER_PROMPT=/d' -cwq ~/.bash_profile
-        echo "export KUBECTL_CLUSTER_PROMPT=\"${KUBECTL_CLUSTER_PROMPT}\"" >> ~/.bash_profile
+        ex '+g/KUBECTL_CLUSTER_PROMPT=/d' -cwq ~/${SHELL_PROFILE}
+        echo "export KUBECTL_CLUSTER_PROMPT=\"${KUBECTL_CLUSTER_PROMPT}\"" >> ~/${SHELL_PROFILE}
     fi
 
     # Add function to check user context when kubectl is invoked.
     if [[ ! -z "$NAMESPACE" ]] || [[ ! -z "$CLUSTER" ]]; then
-        ex '+g/function kubectl/d' -cwq ~/.bash_profile
-        echo 'function kubectl() { command kubectl prompt "$@" && command kubectl "$@"' >> ~/.bash_profile
+        ex '+g/function kubectl/d' -cwq ~/${SHELL_PROFILE}
+        echo 'function kubectl() { command kubectl prompt "$@" && command kubectl "$@"' >> ~/${SHELL_PROFILE}
         exit 0
     fi
 }
@@ -79,9 +80,9 @@ function add_prompt() {
 
 ### Clear prompt list
 function remove_prompt() {
-    ex '+g/KUBECTL_NAMESPACE_PROMPT=/d' -cwq ~/.bash_profile
-    ex '+g/KUBECTL_CLUSTER_PROMPT=/d' -cwq ~/.bash_profile
-    ex '+g/function kubectl/d' -cwq ~/.bash_profile
+    ex '+g/KUBECTL_NAMESPACE_PROMPT=/d' -cwq ~/${SHELL_PROFILE}
+    ex '+g/KUBECTL_CLUSTER_PROMPT=/d' -cwq ~/${SHELL_PROFILE}
+    ex '+g/function kubectl/d' -cwq ~/${SHELL_PROFILE}
     echo -e "\nCleared prompt list.\nPlease open a new terminal for it to take affect.\n"
     exit 0
 }
