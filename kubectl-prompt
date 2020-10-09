@@ -71,7 +71,7 @@ function add_prompt() {
     # Add function to check user context when kubectl is invoked.
     if [[ ! -z "$NAMESPACE" ]] || [[ ! -z "$CLUSTER" ]]; then
         ex '+g/function kubectl/d' -cwq ~/${SHELL_PROFILE}
-        echo 'function kubectl() { command kubectl prompt "$@" && command kubectl "$@"' >> ~/${SHELL_PROFILE}
+        echo 'function kubectl() { command kubectl prompt "$@" && command kubectl "$@" }' >> ~/${SHELL_PROFILE}
         exit 0
     fi
 }
