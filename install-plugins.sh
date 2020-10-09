@@ -10,6 +10,7 @@ chmod +x ./kubectl-*
 rm -rf ~/.kube/plugins/jordanwilson230
 mkdir -p ~/.kube/plugins/jordanwilson230
 cp -r ./kubectl-* ~/.kube/plugins/jordanwilson230/
+cp ./which-shell.sh ~/.kube/plugins/jordanwilson230/
 grep 'PATH=$PATH:~/.kube/plugins/jordanwilson230' ~/${SHELL_PROFILE} 1>/dev/null
 [ $? -ne 0 ] && echo 'export PATH=$PATH:~/.kube/plugins/jordanwilson230' >> ~/${SHELL_PROFILE}
 
