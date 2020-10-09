@@ -1,0 +1,73 @@
+name: "CI"
+on: [pull_request, push]
+jobs:
+  kubectl-plugins-check:
+    name: Validate Plugins
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout kubectl-plugins repo
+      uses: actions/checkout@v1
+      with:
+        repository: jordanwilson230/kubectl-plugins
+        ref: ${{ github.head_ref }}
+
+    - name: Setup Minikube
+      id: minikube
+      uses: CodingNagger/minikube-setup-action@v1.0.2
+
+    - name: Start Minikube
+      run: eval ${{ steps.minikube.outputs.launcher }} && (printf "\n\u2705[PASS] Minikube Ready\n") || (printf "\n\u274c [FAIL] Error while starting Minikube.\n" && exit 1)
+
+    - name: Sanity Check
+      run: kubectl get pods -nkube-system && (printf "\n\u2705[PASS] Sanity Check (get pods)\n") || (printf "\n\u274c [FAIL] Unable to retrieve pod list.\n" && exit 1)
+
+    - name: Install plugins
+      shell: bash -l {0}
+      run: |  
+        cd ../kubectl-plugins
+        ./install-plugins.sh
+        kubectl config set-context $(kubectl config current-context) --namespace=kube-system && (printf "\n\u2705[PASS] Installation Script.\n") || (printf "\n\u274c [FAIL] Installation error\n" && exit 1)
+
+    - name: kubectl switch
+      shell: bash -l {0}
+      run: |
+        kubectl switch default
+        [ $? -eq 0 ] && (printf "\n\u2705 [PASS] Switched to default namespace.\n") ||  (printf "\n\u274c [FAIL] Failed switching namespace.\n" && exit 1)
+
+
+    - name: kubectl ssh
+      shell: bash -l {0}
+      run: |
+        kubectl run test --restart=Never --image=debian --command=true -- sleep 300
+        sleep 10
+        # Grant shell login for games user
+        kubectl exec test -- usermod -s /bin/sh games
+        # Necessary changes without attached tty
+        sed -i 's|"-it",||g' $(which kubectl-ssh)
+        sed -i 's| -it | --attach=true |g' $(which kubectl-ssh)
+        sed -i 's|"tty": true|"tty": false|g' $(which kubectl-ssh)
+        sed -i 's|"stdin": true|"stdin": false|g' $(which kubectl-ssh)
+        sed -i 's|"stdinOnce": true|"stdinOnce": false|g' $(which kubectl-ssh)
+        if [[ $(kubectl ssh -u games test -- whoami | tail -n1) == "games" ]]; then 
+          printf "\n\u2705 Successfully logged in as games user.\n"
+        else
+          printf "\n\u274c Unable to login as games user.\n"
+          exit 1
+        fi
+        
+    - name: kubectl uptime
+      shell: bash -l {0}
+      run: |
+        sudo apt update; sudo apt install -y ruby
+        kubectl uptime && (printf "\n\u2705[PASS] Uptime Ran\n") || (printf "\n\u274c [FAIL] Uptime plugin failure\n" && exit 1)
+
+    - name: kubectl prompt
+      shell: bash -l {0}
+      run: |
+        # Interactive input required. Just validate the help prompt.
+        kubectl prompt --help && (printf "\n\u2705[PASS] Validated -h on prompt\n") || (printf "\n\u274c [FAIL] Prompt plugin: Unexpected output.\n" && exit 1)
+
+    - name: kubectl image
+      shell: bash -l {0}
+      run: |
+        kubectl image -p -i kafka && (printf "\n\u2705[PASS] Returned Public Images\n") || (printf "\n\u274c [FAIL] Unable to retrieve list from Docker registry." && exit 1)

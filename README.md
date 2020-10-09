@@ -1,13 +1,17 @@
-
 # kubectl-plugins
+[![CI Status](https://github.com/jordanwilson230/kubectl-plugins/workflows/CI/badge.svg)](https://github.com/jordanwilson230/kubectl-plugins/actions)
+
 A collection of plugins for kubectl integration (for Kubectl versions >= 1.12.0)
+
+*A portion of these plugins are available on [krew](https://github.com/kubernetes-sigs/krew) as well.*
 
 ###### Note
 - These plugins are for kubectl versions at or above 1.12.0 only. Check your version via ```kubectl version```
 - For versions below 1.12.0, use the 1.11.0 branch.
 - To upgrade your kubectl version via homebrew: ```brew upgrade kubectl```, or via gcloud: ```gcloud components update```
-- Some plugins require jq ( brew/apt/yum install jq )
+- The kubectl-ip plugin requires jq ( brew/apt/yum install jq )
 - All coding was written to maintain compatibility across both BSD and GNU.
+- Requires Bash.
 
 ## Install on Linux/Mac
 ### bash
@@ -61,15 +65,18 @@ ex '+g/KUBECTL_\(.*\)_PROMPT/d' -cwq ~/.zshrc
 ![kapssh](https://user-images.githubusercontent.com/22456127/46683069-4152c100-cbbd-11e8-9db5-9fb319bb320b.gif)
 - Like kubectl exec, but offers a --user flag to exec as root (or any other user)
 - 'ssh' is a misnomer (it works by mounting a docker socket as a volume), but it's easier to work with as a command.
-- You must be in the same namespace as the target pod (passing ```-n namespace``` is not currently allowed).
+- You must be in the same namespace as the target pod or you can use ```-n namespace``` option to specify the namespace
 - Kudos to mikelorant for thinking of the docker socket! :)
+
+Usage: ```kubectl ssh [OPTIONS] <pod name> [-- <commands...>]```
 
 Option | Required | Description | Example
 ------------- | ------------- | ------------- | -------------
 -h | N | Show usage | *`kubectl ssh -h`*
--p | Y | Pod name. The `-p` flag can be omitted if no other flags are passed (i.e., `kubectl ssh kafka-0`)| *`kubectl -p kafka-0`*
--u | N | User to exec as. Defaults to root | *`kubectl ssh -u kafka -p kafka-0`*
--c | N | Specify container within pod | *`kubectl ssh -c burrow-metrics -p kafka-0`*
+-d | N | Enable debug mode. Print a trace of each commands |  *`kubectl ssh -d kafka-0`*
+-n | N | The namespace scope for this CLI request | *`kubectl ssh -n infra kafka-0`*
+-u | N | User to exec as. Defaults to root | *`kubectl ssh -u kafka kafka-0`*
+-c | N | Specify container within pod | *`kubectl ssh -c burrow-metrics kafka-0`*
 -- | N | Pass an optional command. Defaults to /bin/sh | *`kubectl ssh kafka -- ls /etc/burrow`*
 
 

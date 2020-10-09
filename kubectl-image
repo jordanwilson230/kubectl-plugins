@@ -51,20 +51,20 @@ if [[ "$IMAGE" ]]; then
         *"gcr.io"*)
           echo -e "\nSearching $REGISTRY for $IMAGE."
           available_images=$(gcloud container images list-tags ${REGISTRY}/${IMAGE} --limit=20 --format='(digest,tags,timestamp.datetime)' | grep -v TAGS)
-          [ $? -ne 0 ] && echo -e "\nNo images found for $IMAGE.\n" && exit 1
+          [ $? -ne 0 ] && echo -e "\nNo images found for ${REGISTRY}/${IMAGE}.\n" && exit 1
           count=1
         ;;
         *)
           REGISTRY=''
           echo -e "\nSearching Docker Hub for $IMAGE."
-          available_images=($(docker search --limit=25 "${REGISTRY}/$IMAGE" | sed -e 's|TAG||g; s|\[OK\]||g; s|AUTOMATED||g; s|OFFICIAL||g' | sed 's/[[:blank:]]*$//'))
+          available_images=($(docker search --limit=25 "${IMAGE}" | sed -e 's|TAG||g; s|\[OK\]||g; s|AUTOMATED||g; s|OFFICIAL||g' | sed 's/[[:blank:]]*$//'))
           [ "${#available_images[@]}" -le 1 ] && echo -e "\nNo images found for $IMAGE.\n" && exit 1
           count=0
         ;;
     esac
 
     COLOR="$LGREYBG"
-    echo -e "\nLatest tags for $IMAGE:\n"
+    echo -e "\nLatest tags for ${IMAGE}:\n"
     index='   '
     for i in ${available_images[@]}; do
         if [ ${count} -gt 0 ]; then
