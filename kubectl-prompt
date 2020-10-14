@@ -5,7 +5,7 @@ LBLUE=$(echo -en '\033[01;34m')
 YELLOW=$(echo -en '\033[00;33m')
 RESTORE=$(echo -en '\033[0m')
 
-SHELL_PROFILE=$(. ./which-shell.sh)
+SHELL_PROFILE=$(. ~/.kube/plugins/jordanwilson230/which-shell.sh)
 
 COMMAND="${@}"
 export COMMAND="$COMMAND"

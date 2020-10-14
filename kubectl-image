@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SHELL_PROFILE=$(. ./which-shell.sh)
+SHELL_PROFILE=$(. ~/.kube/plugins/jordanwilson230/which-shell.sh)
 
 usage() { echo -e "Search for docker images.\nUsage: kubectl img <options> -i <image>" && grep " .)\ #" $0; exit 0; }
 [ $# -eq 0 ] && echo -e "\nERROR: Missing image name [-i].\n" && usage
