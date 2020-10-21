@@ -59,7 +59,7 @@ Option | Required | Description | Example
 ![switch](https://user-images.githubusercontent.com/22456127/47271118-50cdf480-d543-11e8-8e27-84d8909548b6.gif)
 - View current namespace: *`kubectl switch`*
 - Switch namespace: *`kubectl switch preprod`*
-- Switch cluster: *`kubectl switch cluster staging`*
+- Switch cluster: *`kubectl switch cluster staging`* (accepts fuzzy on the cluster name)
 - List and select from all available clusters: *`kubeclt switch cluster -l`*
 
 Option | Required | Description | Example
