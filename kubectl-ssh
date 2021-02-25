@@ -37,12 +37,10 @@ COMMAND="/bin/sh"
 USERNAME="root"
 CONTAINER="NONE"
 NAMESPACE="NONE"
+CONTEXT="NONE"
 
-while getopts "hdp:n:u:c:" arg; do
+while getopts "hdn:u:c:C:" arg; do
   case $arg in
-    p) # Specify pod name.
-      POD=${OPTARG}
-      ;;
     n) # Specify namespace
       NAMESPACE=${OPTARG}
       KUBECTL+=" --namespace=${OPTARG}"
@@ -52,6 +50,10 @@ while getopts "hdp:n:u:c:" arg; do
       ;;
     c) # Specify container
       CONTAINER=${OPTARG}
+      ;;
+    C) # Specify context
+      CONTEXT=${OPTARG}
+      KUBECTL+=" --context=${OPTARG}"
       ;;
     d) # Enable debug mode
       set -x
@@ -83,7 +85,16 @@ if [[ $# -gt 0 ]]; then
   fi
 fi
 
-echo -e "\nConnecting...\nPod: ${POD}\nNamespace: ${NAMESPACE}\nUser: ${USERNAME}\nContainer: ${CONTAINER}\nCommand: $COMMAND\n"
+cat <<EOF
+Connecting...
+Pod: ${POD}
+Namespace: ${NAMESPACE}
+Context: ${CONTEXT}
+User: ${USERNAME}
+Container: ${CONTAINER}
+Command: ${COMMAND}
+EOF
+
 # $temp_container is the name of our temporary container which we use to connect behind the scenes. Will be cleaned up automatically.
 temp_container="ssh-pod-${RANDOM}"
 
