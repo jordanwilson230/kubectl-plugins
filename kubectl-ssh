@@ -15,6 +15,7 @@ Options:
   -n  If present, the namespace scope for this CLI request
   -u  Username or UID (format: <name|uid>[:<group|gid>])
   -c  Container name. If omitted, the first container in the pod will be chosen
+  -C  The name of the kubeconfig context to use
 EOF
   exit 0
 }
