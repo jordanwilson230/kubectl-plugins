@@ -147,8 +147,7 @@ read -r -d '' OVERRIDES <<EOF || :
             {
                 "name": "docker",
                 "hostPath": {
-                    "path": "/var/run/docker.sock",
-                    "type": "File"
+                    "path": "/var/run/docker.sock"
                 }
             }
         ]
