@@ -50,6 +50,7 @@ Option | Required | Description | Example
 -h | N | Show usage | *`kubectl ssh -h`*
 -d | N | Enable debug mode. Print a trace of each commands |  *`kubectl ssh -d kafka-0`*
 -n | N | The namespace scope for this CLI request | *`kubectl ssh -n infra kafka-0`*
+-C | N | The name of the kubeconfig context to use | *`kubectl ssh -C production kafka-0`*
 -u | N | User to exec as. Defaults to root | *`kubectl ssh -u kafka kafka-0`*
 -c | N | Specify container within pod | *`kubectl ssh -c burrow-metrics kafka-0`*
 -- | N | Pass an optional command. Defaults to /bin/sh | *`kubectl ssh kafka -- ls /etc/burrow`*
