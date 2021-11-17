@@ -5,16 +5,17 @@ set -eu
 usage() {
   cat <<EOF
 
-Usage: kubectl ssh [OPTIONS] <pod name> [-- <commands...>]
+Usage: kubectl ssh [OPTIONAL: -n <namespace>] [OPTIONAL: -u <user>] [OPTIONAL: -c <Container Name>] [ Pod Name ] -- [command]
+Example: kubectl ssh -n default -u root -c prometheus prometheus-282sd0s2 -- bash
 
 Run a command in a running container
 
 Options:
   -h  Show usage
   -d  Enable debug mode. Print a trace of each commands
-  -n  If present, the namespace scope for this CLI request
-  -u  Username or UID (format: <name|uid>[:<group|gid>])
-  -c  Container name. If omitted, the first container in the pod will be chosen
+  -n  The namespace to use for this request. If not provided, defaults to current namespace.
+  -u  Username or UID (format: <name|uid>[:<group|gid>]). If not provided, defaults to root.
+  -c  Container name. If not provided, the first container in the pod will be chosen
 EOF
   exit 0
 }
