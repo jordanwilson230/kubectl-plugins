@@ -43,8 +43,11 @@ ex '+g/KUBECTL_\(.*\)_PROMPT/d' -cwq ~/.bash_profile
 - You must be in the same namespace as the target pod or you can use ```-n namespace``` option to specify the namespace
 - Kudos to mikelorant for thinking of the docker socket! :)
 
-Usage: ```kubectl ssh [OPTIONAL: -n <namespace>] [OPTIONAL: -u <user>] [OPTIONAL: -c <Container Name>] [REQUIRED: PodName ] -- [command]```
-Example: ```kubectl ssh -n default -u root -c prometheus prometheus-282sd0s2 -- bash```
+Usage:
+  ```kubectl ssh [OPTIONAL: -n <namespace>] [OPTIONAL: -u <user>] [OPTIONAL: -c <Container Name>] [REQUIRED: PodName ] -- [command]```
+
+Example:
+  ```kubectl ssh -n default -u root -c prometheus prometheus-282sd0s2 -- bash```
 
 Option | Required | Description | Example
 ------------- | ------------- | ------------- | -------------
