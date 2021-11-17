@@ -44,7 +44,7 @@ ex '+g/KUBECTL_\(.*\)_PROMPT/d' -cwq ~/.bash_profile
 - Kudos to mikelorant for thinking of the docker socket! :)
 
 Usage:
-  ```kubectl ssh [OPTIONAL: -n <namespace>] [OPTIONAL: -u <user>] [OPTIONAL: -c <Container Name>] [REQUIRED: PodName ] -- [command]```
+  ```kubectl ssh [OPTIONAL: -n <namespace>] [OPTIONAL: -u <user>] [OPTIONAL: -c <Container Name>] [REQUIRED: <PodName> ] -- [command]```
 
 Example:
   ```kubectl ssh -n default -u root -c prometheus prometheus-282sd0s2 -- bash```
