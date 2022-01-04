@@ -132,7 +132,7 @@ read -r -d '' OVERRIDES <<EOF || :
                   "--privileged",
                   "-it",
                   "-u",
-                  "${UID}",
+                  "${USERNAME}",
                   "${CONTAINERID}",
                   $(to_json "${COMMAND}")
                 ],
