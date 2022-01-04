@@ -14,7 +14,7 @@ Options:
   -h  Show usage
   -d  Enable debug mode. Print a trace of each commands
   -n  The namespace to use for this request. If not provided, defaults to current namespace.
-  -u  Username or UID (format: <name|uid>[:<group|gid>]). If not provided, defaults to root.
+  -u  UID (format: <name|uid>[:<group|gid>]). If not provided, defaults to root (UID:0).
   -c  Container name. If not provided, the first container in the pod will be chosen
 EOF
   exit 0
@@ -35,7 +35,7 @@ to_json() {
 
 KUBECTL="$(type -p kubectl)"
 COMMAND="/bin/sh"
-USERNAME="root"
+UID="0"
 CONTAINER="NONE"
 NAMESPACE="NONE"
 
@@ -49,7 +49,7 @@ while getopts "hdp:n:u:c:" arg; do
       KUBECTL+=" --namespace=${OPTARG}"
       ;;
     u) # Specify user
-      USERNAME=${OPTARG}
+      UID=${OPTARG}
       ;;
     c) # Specify container
       CONTAINER=${OPTARG}
@@ -84,7 +84,7 @@ if [[ $# -gt 0 ]]; then
   fi
 fi
 
-echo -e "\nConnecting...\nPod: ${POD}\nNamespace: ${NAMESPACE}\nUser: ${USERNAME}\nContainer: ${CONTAINER}\nCommand: $COMMAND\n"
+echo -e "\nConnecting...\nPod: ${POD}\nNamespace: ${NAMESPACE}\nUser: ${UID}\nContainer: ${CONTAINER}\nCommand: $COMMAND\n"
 # $temp_container is the name of our temporary container which we use to connect behind the scenes. Will be cleaned up automatically.
 temp_container="ssh-pod-${RANDOM}"
 
@@ -119,6 +119,7 @@ read -r -d '' OVERRIDES <<EOF || :
       }
     },
     "spec": {
+        "securityContext": { "runAsUser": $UID },
         "containers": [
             {
                 "image": "docker",
@@ -132,7 +133,7 @@ read -r -d '' OVERRIDES <<EOF || :
                   "--privileged",
                   "-it",
                   "-u",
-                  "${USERNAME}",
+                  "${UID}",
                   "${CONTAINERID}",
                   $(to_json "${COMMAND}")
                 ],
