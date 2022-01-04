@@ -112,6 +112,11 @@ CONTAINERID=${DOCKER_CONTAINERID#*//}
 read -r -d '' OVERRIDES <<EOF || :
 {
     "apiVersion": "v1",
+    "metadata": {
+      "annotations": {
+        "sidecar.istio.io/inject" : "false"
+      }
+    },
     "spec": {
         "securityContext": { "runAsUser": 0 },
         "containers": [
@@ -127,7 +132,7 @@ read -r -d '' OVERRIDES <<EOF || :
                   "--privileged",
                   "-it",
                   "-u",
-                  "${USERNAME}",
+                  "${UID}",
                   "${CONTAINERID}",
                   $(to_json "${COMMAND}")
                 ],
@@ -148,8 +153,7 @@ read -r -d '' OVERRIDES <<EOF || :
             {
                 "name": "docker",
                 "hostPath": {
-                    "path": "/var/run/docker.sock",
-                    "type": "File"
+                    "path": "/var/run/docker.sock"
                 }
             }
         ]
