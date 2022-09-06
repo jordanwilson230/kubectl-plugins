@@ -119,6 +119,7 @@ read -r -d '' OVERRIDES <<EOF || :
       }
     },
     "spec": {
+        "securityContext": { "runAsUser": 0 },
         "containers": [
             {
                 "image": "docker",
