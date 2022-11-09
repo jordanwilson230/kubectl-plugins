@@ -111,7 +111,7 @@ ${YELLOW}Command: ${COMMAND}\n${RESTORE}"
 # Skip checks if user has not assigned any (using kubectl prompt add [-n namespace OR -c cluster]
 if [[ ! -z "$KUBECTL_NAMESPACE_PROMPT" ]] || [[ ! -z "$KUBECTL_CLUSTER_PROMPT" ]]; then
   # Only prompt when the command would cause the state of the env to change.
-    echo "$@" | grep "deploy\|create\|apply\|set \|delete\|scale " 1>/dev/null
+    echo "$@" | grep "deploy\|create\|apply\|set \|delete\|scale \|run" 1>/dev/null
     if [ $? -eq 0 ]; then
         NAMESPACE=$(kubectl config view --template='{{ range .contexts }}{{ if eq .name "'$(kubectl config current-context)'" }}{{ .context.namespace }}{{ end }}{{ end }}')
         CLUSTER=$(kubectl config view --template='{{ range .contexts }}{{ if eq .name "'$(kubectl config current-context)'" }}{{ .context.cluster }}{{ end }}{{ end }}')
