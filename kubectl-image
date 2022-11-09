@@ -1,5 +1,6 @@
 #!/bin/bash
 
+SHELL_PROFILE=$(. ~/.kube/plugins/jordanwilson230/which-shell.sh)
 
 usage() { echo -e "Search for docker images.\nUsage: kubectl img <options> -i <image>" && grep " .)\ #" $0; exit 0; }
 [ $# -eq 0 ] && echo -e "\nERROR: Missing image name [-i].\n" && usage
@@ -15,9 +16,9 @@ while getopts ":i:cph" arg; do
       read -p "Save ${REGISTRY} for future reference? [y/n]: " save
       if [[ "$save" == "y" ]]; then
     # Overwrite or add default registry
-          ex '+g/IMG_REGISTRY=/d' -cwq ~/.bash_profile
-          echo 'export IMG_REGISTRY="'$REGISTRY'"' >> ~/.bash_profile
-          echo -e "\nSaved to ~/.bash_profile. Source or open a new terminal to take effect."
+          ex '+g/IMG_REGISTRY=/d' -cwq ~/${SHELL_PROFILE}
+          echo 'export IMG_REGISTRY="'$REGISTRY'"' >> ~/${SHELL_PROFILE}
+          echo -e "\nSaved to ~/${SHELL_PROFILE}. Source or open a new terminal to take effect."
       fi
       IMG_REGISTRY="$REGISTRY"
      ;;
@@ -58,7 +59,7 @@ if [[ "$IMAGE" ]]; then
           echo -e "\nSearching Docker Hub for $IMAGE."
           available_images=($(docker search --limit=25 "${IMAGE}" | sed -e 's|TAG||g; s|\[OK\]||g; s|AUTOMATED||g; s|OFFICIAL||g' | sed 's/[[:blank:]]*$//'))
           [ "${#available_images[@]}" -le 1 ] && echo -e "\nNo images found for $IMAGE.\n" && exit 1
-          count=0 
+          count=0
         ;;
     esac
 

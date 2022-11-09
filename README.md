@@ -14,13 +14,23 @@ A collection of plugins for kubectl integration (for Kubectl versions >= 1.12.0)
 - Requires Bash.
 
 ## Install on Linux/Mac
+### bash
 ```bash
 git clone https://github.com/jordanwilson230/kubectl-plugins.git
 cd kubectl-plugins
 ./install-plugins.sh
 source ~/.bash_profile
 ```
+
+### Zsh
+```zsh
+git clone https://github.com/jordanwilson230/kubectl-plugins.git
+cd kubectl-plugins
+./install-plugins.sh
+source ~/.zshrc
+```
 #### To Uninstall
+##### bash
 ```
 rm -rf ~/.kube/plugins/jordanwilson230
 ex '+g/jordanwilson230/d' -cwq ~/.bash_profile
@@ -33,6 +43,21 @@ Remove the ```prompt``` plugin:
 ```
 ex '+g/function kubectl()/d' -cwq ~/.bash_profile
 ex '+g/KUBECTL_\(.*\)_PROMPT/d' -cwq ~/.bash_profile
+```
+
+##### Zsh
+```
+rm -rf ~/.kube/plugins/jordanwilson230
+ex '+g/jordanwilson230/d' -cwq ~/.zshrc
+```
+Remove the ```image``` plugin:
+```
+ex '+g/IMG_REGISTRY=/d' -cwq ~/.zshrc
+```
+Remove the ```prompt``` plugin:
+```
+ex '+g/function kubectl()/d' -cwq ~/.zshrc
+ex '+g/KUBECTL_\(.*\)_PROMPT/d' -cwq ~/.zshrc
 ```
 
 
