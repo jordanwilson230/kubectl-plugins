@@ -70,7 +70,7 @@ function add_prompt() {
     # Add function to check user context when kubectl is invoked.
     if [[ ! -z "$NAMESPACE" ]] || [[ ! -z "$CLUSTER" ]]; then
         ex '+g/function kubectl/d' -cwq ~/.bash_profile
-        echo 'function kubectl() { kube=$(which kubectl); $kube prompt "${@}" && command $kube "${@}" ; }' >> ~/.bash_profile
+        echo 'function kubectl() { command kubectl prompt "$@" && command kubectl "$@"' >> ~/.bash_profile
         exit 0
     fi
 }
